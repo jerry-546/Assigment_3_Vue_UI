@@ -1,8 +1,8 @@
 <template>
   <div id="app">
     <!-- <navigation/> -->
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
     <Table v-bind:rows = "rows"/>
+    <email v-bind:rows = "rows"/>
 
   </div>
 
@@ -11,15 +11,16 @@
 <script>
 import axios from 'axios';
 //import navigation from './components/Navigation.vue'
-import HelloWorld from './components/HelloWorld.vue'
 import Table from './components/table_template.vue'
+import email from './components/email.vue'
+
 
 
 export default {
     name: 'app',
     components: {
-      HelloWorld,
-      Table
+      Table,
+      email
     },
       data: function() {
       return{
