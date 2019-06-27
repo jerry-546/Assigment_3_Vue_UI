@@ -31,6 +31,8 @@ export default {
         .then(res => {
           //console.log(res.data.data)
           this.rows = res.data.data
+        }).catch(err => {
+          alert(err)
         }) 
   }
 }

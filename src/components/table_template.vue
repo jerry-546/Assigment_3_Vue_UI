@@ -33,7 +33,6 @@
 
 <script>
 
-
 export default {
   name: 'Table',
   props: {
@@ -47,6 +46,7 @@ export default {
       
     }
    }
+
 }
 </script>
 
