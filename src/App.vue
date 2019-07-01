@@ -1,8 +1,9 @@
 <template>
   <div id="app">
+
     <button v-on:click="isHidden = true">Table</button>
     <button v-on:click="isHidden = false">Send Email</button>
-    <!-- <navigation/> -->
+
     <Table v-if="isHidden" v-bind:rows = "rows"/>
     <email v-if="!isHidden" v-bind:rows = "rows"/>
 
@@ -12,7 +13,6 @@
 
 <script>
 import axios from 'axios';
-//import navigation from './components/Navigation.vue'
 import Table from './components/table_template.vue'
 import email from './components/email.vue'
 
@@ -37,11 +37,7 @@ export default {
         }).catch(err => {
           alert(err)
         }) 
-      this.$nextTick(() => {
-      console.log(
-        'inside nextTick callback:'
-      ) // => 'not updated'
-    })
+
   }
 }
 </script>
@@ -57,4 +53,7 @@ button {
   display: inline-block;
   font-size: 16px;
 }
+button:hover {
+          background: #ff8a8a;
+        }
 </style>

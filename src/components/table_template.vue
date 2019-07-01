@@ -1,7 +1,8 @@
 <template>
+
   <div class="table">
     <table id = "AllCustomers">
-        <thead>
+      <thead>
         <th>ID</th>
         <th>Last Name</th>
         <th>First Name</th>
@@ -12,8 +13,8 @@
         <th>Zip</th>
         <th>Timestamp</th>
       </thead>
+
       <tbody>
-        
         <tr v-for="row in rows" v-bind:key = "row.id" >
           <td>{{row.id}}</td>
           <td>{{row.last_name}}</td>
@@ -27,8 +28,8 @@
         </tr>
       </tbody>
     </table>
-
   </div>
+
 </template>
 
 <script>
@@ -43,7 +44,6 @@ export default {
   },
   data: function() {
     return{
-      
     }
    }
 
