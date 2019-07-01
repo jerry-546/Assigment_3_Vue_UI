@@ -1,17 +1,13 @@
 <template>
     <div>
-    <select v-model="email" @change="supdate_email_info($event)">
-      <option data-item-type ="choice" v-for="row in rows" v-bind:key = "row.id" v-bind:value="row.id" > {{row.email}} </option>
-    </select>
-    <button v-on:click="send_email">SEND EMAIL</button>
-            <div>
-                  {{email}}
-                  {{emailID}}
-            </div>
-
+        <select class = "select-css" v-model="email" @change="update_email_info($event)">
+          <option  v-for="row in rows" v-bind:key = "row.id" v-bind:value="row.email" :id="row.id"  > {{row.email}} </option>
+        </select>
+        <button v-on:click="send_email">SEND EMAIL</button>
     </div>
 </template>
 <script>
+import axios from 'axios';
 export default {
   name: 'Email',
   props: {
@@ -29,13 +25,25 @@ export default {
      methods: {
      update_email_info: function(event){
       var index = event.target.options.selectedIndex;
-      var idCho = event.emailID = event.target.options[index].value;
+      var idCho = event.emailID = event.target.options[index].id;
       var emailCho = event.target.options[index].text;
       this.email = emailCho
       this.emailID = idCho
        //alert("sent email to ")
      },
+
      send_email: function(){
+          axios.post("http://127.0.0.1:5555/update",{
+            id: this.emailID,
+            email: this.email
+          })
+        .then(res => {
+          console.log(res.data)
+            alert( res.data.Email)
+         }).catch(err => {
+          alert(err)
+        })
+
 
      }
    }
@@ -43,5 +51,18 @@ export default {
 }
 </script>
 <style>
+select {
+  width: 50%;
+  height: 30px;
+  color: rgb(255, 104, 104);
 
+  background: transparent;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  height: 34px;
+
+  border: 1px solid #111;
+  border-radius: 3px;
+  overflow: hidden;
+}
 </style>
