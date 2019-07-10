@@ -42,7 +42,6 @@ export default {
         }).catch(err => {
           alert(err)
         })
-
   }
 }
 </script>
