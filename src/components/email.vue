@@ -23,31 +23,30 @@ export default {
     }
   },
      methods: {
+    //Getting information to send email to chosen  email
      update_email_info: function(event){
       var index = event.target.options.selectedIndex;
       var idCho = event.emailID = event.target.options[index].id;
       var emailCho = event.target.options[index].text;
       this.email = emailCho
       this.emailID = idCho
-       //alert("sent email to ")
      },
-
+      //Sends email and send alert to confirm email was sent
      send_email: function(){
-          axios.post("http://127.0.0.1:5555/update",{
-            id: this.emailID,
-            email: this.email
-          })
-        .then(res => {
-          console.log(res.data)
-            alert( res.data.Email)
-         }).catch(err => {
-          alert(err)
-        })
+      axios.post("http://127.0.0.1:5555/send",{
+        id: this.emailID,
+        email: this.email
+      })
+      .then(res => {
+          alert("Email was sent to "+ res.data)
+       }).catch(err => {
+        alert(err)
+       })
 
 
      }
    }
-    
+
 }
 </script>
 <style>
