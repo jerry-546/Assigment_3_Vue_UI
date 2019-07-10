@@ -3,7 +3,7 @@
   <div class="table">
     <table id = "AllCustomers">
       <thead>
-        <th>ID</th>
+
         <th>Last Name</th>
         <th>First Name</th>
         <th>Email</th>
@@ -12,11 +12,13 @@
         <th>State</th>
         <th>Zip</th>
         <th>Timestamp</th>
+        <th v-if="isHidden == 'edit'">Edit</th>
+        <th v-if="isHidden == 'remove'">Remove</th>
       </thead>
 
       <tbody>
         <tr v-for="row in rows" v-bind:key = "row.id" >
-          <td>{{row.id}}</td>
+
           <td>{{row.last_name}}</td>
           <td>{{row.first_name}}</td>
           <td> {{row.email}}</td>
@@ -25,6 +27,10 @@
           <td>{{row.state}}</td>
           <td>{{row.zip}}</td>
           <td>{{row.emailSent}}</td>
+          <td v-if="isHidden == 'edit'" ><button >Edit</button></td>
+          <td v-if="isHidden == 'remove'"><button >Remove</button></td>
+
+
         </tr>
       </tbody>
     </table>
@@ -40,10 +46,12 @@ export default {
     rows:{
       type:Array,
       required: true
-    }
+    },
+    isHidden: {type:String}
   },
   data: function() {
     return{
+
     }
    }
 

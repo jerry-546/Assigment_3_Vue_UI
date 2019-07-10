@@ -1,15 +1,15 @@
 <template>
-    <form class="custForm">
+    <form class="custForm" @submit.prevent = "onSubmit()">
         <p>
             <label for="first_name"> First Name </label>
-            <input id ="first_name" v-model="first_name" placeholder="First Name">
+            <input required id ="first_name" v-model="first_name" placeholder="First Name">
 
             <label for="last_name"> Last Name </label>
-            <input id ="last_name" v-model="last_name" placeholder="last_name">
+            <input required id ="last_name" v-model="last_name" placeholder="last_name">
         </p>
                 <p>
             <label for="email"> Email </label>
-            <input id ="email" v-model="email" placeholder="email">
+            <input required id ="email" v-model="email" placeholder="email">
 
             <label for="address"> Address </label>
             <input id ="address" v-model="address" placeholder="address">
@@ -33,7 +33,8 @@
 </template>
 
 <script>
-import { METHODS } from 'http';
+
+import axios from 'axios'
 export default {
     name: "customerForm",
     data: function(){
@@ -47,16 +48,32 @@ export default {
             zip: null
         }
     },
+    methods:{
+        onSubmit() {
+            let new_customer ={
+                first_name: this.first_name,
+                last_name: this.last_name,
+                email: this.email,
+                address: this.address,
+                city: this.city,
+                state: this.state,
+                zip: this.zip
+            }
+            if(new_customer.email.includes('@')){
 
-    onsubmit() {
-        let new_customer ={
-            first_name: this.first_name,
-            last_name: this.last_name,
-            email: this.email,
-            address: this.address,
-            city: this.city,
-            state: this.state,
-            zip: this.zip
+                axios.post("http://127.0.0.1:5555/crud",{
+
+                    new_customer
+                })
+                .then(res => {
+                alert( "Customer: " + res.data + " was added")
+                }).catch(err => {
+                    alert(err)
+                })
+            } else {
+                alert("Not a proper email")
+            }
+
         }
     }
 

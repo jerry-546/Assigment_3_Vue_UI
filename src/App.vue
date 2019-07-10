@@ -1,12 +1,15 @@
 <template>
   <div id="app">
 
-    <button v-on:click="isHidden = true">Table</button>
-    <button v-on:click="isHidden = false">Send Email</button>
+    <button class = "navigation_button" v-on:click="isHidden = 'table'">Table</button>
+    <button class = "navigation_button" v-on:click="isHidden = 'email'">Send Email</button>
+    <button class = "navigation_button" v-on:click="isHidden = 'add'">Add Customer</button>
+    <button class = "navigation_button" v-on:click="isHidden = 'edit'">Edit</button>
+    <button class = "navigation_button" v-on:click="isHidden = 'remove'">Remove</button>
 
-    <Table v-if="isHidden" v-bind:rows = "rows"/>
-    <email v-if="!isHidden" v-bind:rows = "rows"/>
-    <customerForm />
+    <Table v-if="(isHidden == 'table') || (isHidden == 'edit') || (isHidden == 'remove')" v-bind:rows = "rows" v-bind:isHidden = "isHidden"/>
+    <email v-if="isHidden == 'email'" v-bind:rows = "rows"/>
+    <customerForm v-if="isHidden == 'add'"/>
 
   </div>
 
@@ -30,10 +33,10 @@ export default {
       data: function() {
       return{
       rows : [],
-      isHidden: true
+      isHidden: 'table'
       }
     },mounted(){
-        axios.get('http://127.0.0.1:5555/customers')
+        axios.get('http://127.0.0.1:5555/all_customers')
         .then(res => {
           this.rows = res.data
         }).catch(err => {
@@ -45,7 +48,7 @@ export default {
 </script>
 
 <style>
-button {
+.navigation_button {
  background-color: rgb(255, 0, 0);
   border: none;
   color: white;
@@ -55,7 +58,7 @@ button {
   display: inline-block;
   font-size: 16px;
 }
-button:hover {
+.navigation_button:hover {
           background: #ff8a8a;
         }
 </style>
