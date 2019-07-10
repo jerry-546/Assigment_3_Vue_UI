@@ -33,12 +33,12 @@ export default {
      },
       //Sends email and send alert to confirm email was sent
      send_email: function(){
-      axios.post("http://127.0.0.1:5555/update",{
+      axios.post("http://127.0.0.1:5555/send",{
         id: this.emailID,
         email: this.email
       })
       .then(res => {
-          alert(res.data.Email)
+          alert("Email was sent to "+ res.data)
        }).catch(err => {
         alert(err)
        })
@@ -46,7 +46,7 @@ export default {
 
      }
    }
-    
+
 }
 </script>
 <style>

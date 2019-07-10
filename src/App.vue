@@ -6,6 +6,7 @@
 
     <Table v-if="isHidden" v-bind:rows = "rows"/>
     <email v-if="!isHidden" v-bind:rows = "rows"/>
+    <customerForm />
 
   </div>
 
@@ -15,6 +16,7 @@
 import axios from 'axios';
 import Table from './components/table_template.vue'
 import email from './components/email.vue'
+import customerForm from './components/customerForm'
 
 
 
@@ -22,7 +24,8 @@ export default {
     name: 'app',
     components: {
       Table,
-      email
+      email,
+      customerForm
     },
       data: function() {
       return{
@@ -32,11 +35,10 @@ export default {
     },mounted(){
         axios.get('http://127.0.0.1:5555/customers')
         .then(res => {
-          //console.log(res.data.data)
-          this.rows = res.data.data
+          this.rows = res.data
         }).catch(err => {
           alert(err)
-        }) 
+        })
 
   }
 }
@@ -44,7 +46,7 @@ export default {
 
 <style>
 button {
- background-color: rgb(255, 0, 0); /* Green */
+ background-color: rgb(255, 0, 0);
   border: none;
   color: white;
   padding: 15px 32px;

@@ -24,7 +24,7 @@
           <td>{{row.city}}</td>
           <td>{{row.state}}</td>
           <td>{{row.zip}}</td>
-          <td>{{row.timestamp}}</td>
+          <td>{{row.emailSent}}</td>
         </tr>
       </tbody>
     </table>
