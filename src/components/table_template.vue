@@ -34,7 +34,7 @@
     <button v-on:click="removeApper">Remove</button>
     <button v-on:click="editApper">Edit</button>
 <div class="table">
-    <md-table v-model="rows" md-card>
+    <md-table v-model="rows"  :md-sort.sync="currentSort" :md-sort-order.sync="currentSortOrder" :md-sort-fn="customSort" md-card>
       <md-table-toolbar>
         <h1 class="md-title">AllCustomers</h1>
       </md-table-toolbar>
@@ -104,9 +104,20 @@ export default {
         })
 
       },
-     editCust(row){
-      alert("id "+ row.id )
-      console.log(row)
+      customSort(value) {
+          return value.sort((a, b) => {
+          const sortBy = this.currentSort
+
+          if (this.currentSortOrder === 'desc') {
+            return a[sortBy].localeCompare(b[sortBy])
+          }
+
+          return b[sortBy].localeCompare(a[sortBy])
+        })
+      },
+      editCust(row){
+        alert("id "+ row.id )
+        console.log(row)
      }
 
    }
