@@ -1,7 +1,5 @@
 <template>
 
-  <div class="table">
-
 
 <div class="table">
     <md-table v-model="rows" md-sort="first_name" md-sort-order="asc" md-card>
@@ -26,7 +24,7 @@
 
       </md-table-row>
     </md-table>
-    </div>
+
   </div>
 
 
@@ -90,7 +88,7 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-  table {
+  .table {
     font-family: 'Open Sans', sans-serif;
     width: 750px;
     border-collapse: collapse;
