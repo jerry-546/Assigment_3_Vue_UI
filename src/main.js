@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import VueRouter from 'vue-router'
-import {MdTable} from 'vue-material/dist/components'
+import VueMaterial from 'vue-material'
 
 import App from './App'
 import Table from "./components/table_template.vue"
@@ -14,7 +14,8 @@ import Test from "./components/Navigation.vue"
 Vue.config.productionTip = false
 Vue.use(VueRouter)
 Vue.use(Vuetify)
-Vue.use(MdTable)
+Vue.use(VueMaterial)
+
 
 const routes = [
   {

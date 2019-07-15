@@ -1,78 +1,80 @@
 <template>
-<table id = "AllCustomers">
-      <thead>
+  <div>
+    <md-table v-model="searched" md-sort="name" md-sort-order="asc" md-card md-fixed-header>
+      <md-table-toolbar>
+        <div class="md-toolbar-section-start">
+          <h1 class="md-title">Users</h1>
+        </div>
 
-        <th>Last Name</th>
-        <th>First Name</th>
-        <th>Email</th>
-        <th>Address</th>
-        <th>City</th>
-        <th>State</th>
-        <th>Zip</th>
-        <th>Timestamp</th>
-        <th v-if="isHidden == 'edit'">Edit</th>
-        <th v-if="isHidden == 'remove'">Remove</th>
-      </thead>
+        <md-field md-clearable class="md-toolbar-section-end">
+          <md-input id = "nameSearch" placeholder="Search by name..." v-model="search" @input="searchOnTable"> </md-input>
+        </md-field>
+      </md-table-toolbar>
 
-      <tbody >
-        <tr v-for="(row, index) in rows" v-bind:key="row.id" v-bind:index = "index" >
-          <td>{{row.last_name}}</td>
-          <td>{{row.first_name}}</td>
-          <td> {{row.email}}</td>
-          <td>{{row.address}}</td>
-          <td>{{row.city}}</td>
-          <td>{{row.state}}</td>
-          <td>{{row.zip}}</td>
-          <td>{{row.emailSent}}</td>
-          <td v-if="isHidden == 'edit'" ><button @click="editCust(row)">Edit</button></td>
-          <td v-if="isHidden == 'remove'"><button @click="removeCust(row.id, index)">Remove</button></td>
-        </tr>
-      </tbody>
-    </table>
+      <md-table-empty-state
+        md-label="No users found"
+        :md-description="`No user found for this '${search}' query. Try a different search term or create a new user.`">
+        <md-button class="md-primary md-raised" @click="newUser">Create New User</md-button>
+      </md-table-empty-state>
 
+      <md-table-row slot="md-table-row" slot-scope="{ item }">
+        <md-table-cell md-label="ID" md-sort-by="id" md-numeric>{{ item.id }}</md-table-cell>
+        <md-table-cell md-label="Name" md-sort-by="name">{{ item.first_name }}</md-table-cell>
+        <md-table-cell md-label="Email" md-sort-by="email">{{ item.email }}</md-table-cell>
+        <md-table-cell md-label="Gender" md-sort-by="gender">{{ item.gender }}</md-table-cell>
+        <md-table-cell md-label="Job Title" md-sort-by="title">{{ item.title }}</md-table-cell>
+      </md-table-row>
+    </md-table>
+  </div>
 </template>
 
 <script>
+import axios from 'axios'
+  const toLower = text => {
+    return text.toString().toLowerCase()
+  }
+
+  const searchByName = (items, term) => {
+    if (term) {
+      return items.filter(item => toLower(item.name).includes(toLower(term)))
+    }
+
+    return items
+  }
+
   export default {
-    name: 'TableTemplate',
+    name: 'TableSearch',
     data: () => ({
-      users: [
-        {
-          id: 1,
-          name: 'Shawna Dubbin',
-          email: 'sdubbin0@geocities.com',
-          gender: 'Male',
-          title: 'Assistant Media Planner'
-        },
-        {
-          id: 2,
-          name: 'Odette Demageard',
-          email: 'odemageard1@spotify.com',
-          gender: 'Female',
-          title: 'Account Coordinator'
-        },
-        {
-          id: 3,
-          name: 'Lonnie Izkovitz',
-          email: 'lizkovitz3@youtu.be',
-          gender: 'Female',
-          title: 'Operator'
-        },
-        {
-          id: 4,
-          name: 'Thatcher Stave',
-          email: 'tstave4@reference.com',
-          gender: 'Male',
-          title: 'Software Test Engineer III'
-        },
-        {
-          id: 5,
-          name: 'Clarinda Marieton',
-          email: 'cmarietonh@theatlantic.com',
-          gender: 'Female',
-          title: 'Paralegal'
-        }
-      ]
-    })
+      search: null,
+      searched: [],
+      users: []
+    }),
+    methods: {
+      newUser () {
+        window.alert('Noop')
+      },
+      searchOnTable () {
+        this.searched = searchByName(this.users, this.search)
+      }
+    },
+    created () {
+axios.get('http://127.0.0.1:5555/all_customers')
+        .then(res => {
+          this.users = res.data
+          this.searched = this.users
+        }).catch(err => {
+          alert(err)
+        })
+    }
   }
 </script>
+
+<style lang="scss" scoped>
+  .md-field {
+    width: 30%;
+    color: black;
+
+  }
+
+
+</style>

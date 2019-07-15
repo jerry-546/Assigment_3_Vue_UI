@@ -9,19 +9,22 @@
 <script>
 import axios from 'axios';
 export default {
-  name: 'Email',
-  props: {
-    rows:{
-      type:Array,
-      required: true
-    }
-  },
-  data: function(){
-    return {
-      email: '',
-      emailID: '',
-    }
-  },
+    name: 'Email',
+    props: {
+        rows:{
+          type:Array,
+          required: true
+        }
+      },
+    data: function(){
+      return {
+        email: '',
+        emailID: '',
+      }
+    },
+    mounted(){
+      axios.get('http://127.0.0.1:5555/all_customers')
+    },
      methods: {
     //Getting information to send email to chosen  email
      update_email_info: function(event){

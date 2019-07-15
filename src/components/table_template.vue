@@ -1,13 +1,22 @@
 <template>
-
-
 <div class="table">
-    <md-table v-model="rows" md-sort="first_name" md-sort-order="asc" md-card>
+    <md-table v-model="searched" md-sort="first_name" md-sort-order="asc" md-card md-fixed-header>
       <md-table-toolbar>
-        <h1 class="md-title">AllCustomers</h1>
-            <button v-on:click="removeApper">Remove</button>
-    <button v-on:click="editApper">Edit</button>
+        <div  class="md-toolbar-section-start">
+          <h1 class="md-title">AllCustomers</h1>
+              <button v-on:click="removeApper">Remove</button>
+              <button v-on:click="editApper">Edit</button>
+        </div>
+        <md-field md-clearable class="md-toolbar-section-end">
+          <md-input id = "nameSearch" placeholder="Search by first name..." v-model="search" @input="searchOnTable"> </md-input>
+        </md-field>
       </md-table-toolbar>
+
+      <md-table-empty-state
+        md-label="No users found"
+        :md-description="`No user found for this '${search}' query. Try a different search term or create a new user.`">
+
+      </md-table-empty-state>
 
       <md-table-row slot="md-table-row" slot-scope="{ item }">
         <md-table-cell md-label="ID" md-sort-by="id" md-numeric>{{ item.id }}</md-table-cell>
@@ -21,47 +30,58 @@
         <md-table-cell md-label="TIMESTAMP" >{{ item.emailSent }}</md-table-cell>
         <md-table-cell md-label="EDIT" v-if="isHidden == 'edit'"><button @click="editCust(item)">Edit</button></md-table-cell>
         <md-table-cell md-label="REMOVE" v-if="isHidden == 'remove'"><button @click="removeCust(item.id, index)">Remove</button></md-table-cell>
-
       </md-table-row>
     </md-table>
-
   </div>
-
-
-
 </template>
 
 <script>
 import axios from 'axios'
 
+  const toLower = text => {
+    return text.toString().toLowerCase()
+  }
+
+  const searchByName = (items, term) => {
+    if (term) {
+      return items.filter(item => toLower(item.first_name).includes(toLower(term)))
+    }
+
+    return items
+  }
+
 export default {
   name: 'Table',
-  props: {},
-  data: function() {
-      return{
-        isHidden: this.$route.params.isHidden,
+
+  data: () => ({
+
+        search: null,
+        searched: [],
+        isHidden: null,
         rows: []
-      }
-    },
-  beforeRouteUpdate(to, from,next)  {
-    this.isHidden = to.params.isHidden
-    next()
-  },
-  mounted(){
+    }),
+  created(){
         axios.get('http://127.0.0.1:5555/all_customers')
         .then(res => {
           this.rows = res.data
+          this.searched = this.rows
         }).catch(err => {
           alert(err)
         })
   },
    methods: {
+
+     searchOnTable(){
+       this.searched = searchByName(this.rows, this.search)
+     },
+
      removeApper(){
        this.isHidden = 'remove'
      },
       editApper(){
        this.isHidden = 'edit'
      },
+
      removeCust(cid){
         let payload = {
           id: cid
@@ -80,7 +100,8 @@ export default {
         console.log(row)
      }
 
-   }
+   },
+
 
 
 }
@@ -132,4 +153,7 @@ export default {
 .table button:hover {
           background: #ff8a8a;
         }
+  .md-field {
+    max-width: 300px;
+  }
 </style>
