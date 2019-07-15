@@ -1,48 +1,27 @@
 <template>
   <div id="app">
 
-    <button class = "navigation_button" v-on:click="isHidden = 'table'">Table</button>
-    <button class = "navigation_button" v-on:click="isHidden = 'email'">Send Email</button>
-    <button class = "navigation_button" v-on:click="isHidden = 'add'">Add Customer</button>
-    <button class = "navigation_button" v-on:click="isHidden = 'edit'">Edit</button>
-    <button class = "navigation_button" v-on:click="isHidden = 'remove'">Remove</button>
+    <router-link class = "navigation_button" to="/table" tag="button">Table</router-link>
+    <router-link class = "navigation_button" to="/send" tag="button">Send Email</router-link>
+    <router-link class = "navigation_button" to="/add" tag="button">Add Customer</router-link>
+     <router-link class = "navigation_button" to="/test" tag="button">Test</router-link>
+    <!-- <router-link class = "navigation_button" to="/table/edit" tag="button">Edit</router-link>
+    <router-link class = "navigation_button" to="/table/remove" tag="button">Remove</router-link> -->
 
-    <Table v-if="(isHidden == 'table') || (isHidden == 'edit') || (isHidden == 'remove')" v-bind:rows = "rows" v-bind:isHidden = "isHidden"/>
-    <email v-if="isHidden == 'email'" v-bind:rows = "rows"/>
-    <customerForm v-if="isHidden == 'add'"/>
+    <router-view :key="$route.fullPath"></router-view>
+
+
+
+
 
   </div>
 
 </template>
 
 <script>
-import axios from 'axios';
-import Table from './components/table_template.vue'
-import email from './components/email.vue'
-import customerForm from './components/customerForm'
-
-
 
 export default {
     name: 'app',
-    components: {
-      Table,
-      email,
-      customerForm
-    },
-      data: function() {
-      return{
-      rows : [],
-      isHidden: 'table'
-      }
-    },mounted(){
-        axios.get('http://127.0.0.1:5555/all_customers')
-        .then(res => {
-          this.rows = res.data
-        }).catch(err => {
-          alert(err)
-        })
-  }
 }
 </script>
 
