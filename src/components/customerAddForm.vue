@@ -57,7 +57,6 @@ export default {
             city: null,
             state: null,
             zip: null,
-            addOrEdit: true
         }
     },
     methods:{

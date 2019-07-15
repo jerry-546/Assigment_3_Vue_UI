@@ -1,80 +1,98 @@
 <template>
-  <div>
-    <md-table v-model="searched" md-sort="name" md-sort-order="asc" md-card md-fixed-header>
-      <md-table-toolbar>
-        <div class="md-toolbar-section-start">
-          <h1 class="md-title">Users</h1>
-        </div>
+<div>
+<button @click="show">Click me</button>
+  <modal name="hello-world">
+            <form ref = "form" class="custForm" @submit.prevent = "onSubmit()">
+            <b-form-input
+            id="first_name_input"
+            v-model="first_name"
+            >
 
-        <md-field md-clearable class="md-toolbar-section-end">
-          <md-input id = "nameSearch" placeholder="Search by name..." v-model="search" @input="searchOnTable"> </md-input>
-        </md-field>
-      </md-table-toolbar>
+            </b-form-input>
+            <p>
+                <label for="first_name"> First Name </label>
+                <input required id ="first_name" v-model="first_name" placeholder="First Name">
 
-      <md-table-empty-state
-        md-label="No users found"
-        :md-description="`No user found for this '${search}' query. Try a different search term or create a new user.`">
-        <md-button class="md-primary md-raised" @click="newUser">Create New User</md-button>
-      </md-table-empty-state>
+                <label for="last_name"> Last Name </label>
+                <input required id ="last_name" v-model="last_name" placeholder="last_name">
+            </p>
+                    <p>
+                <label for="email"> Email </label>
+                <input required id ="email" v-model="email" placeholder="email">
 
-      <md-table-row slot="md-table-row" slot-scope="{ item }">
-        <md-table-cell md-label="ID" md-sort-by="id" md-numeric>{{ item.id }}</md-table-cell>
-        <md-table-cell md-label="Name" md-sort-by="name">{{ item.first_name }}</md-table-cell>
-        <md-table-cell md-label="Email" md-sort-by="email">{{ item.email }}</md-table-cell>
-        <md-table-cell md-label="Gender" md-sort-by="gender">{{ item.gender }}</md-table-cell>
-        <md-table-cell md-label="Job Title" md-sort-by="title">{{ item.title }}</md-table-cell>
-      </md-table-row>
-    </md-table>
+                <label for="address"> Address </label>
+                <input id ="address" v-model="address" placeholder="address">
+            </p>
+                    <p>
+                <label for="city"> City </label>
+                <input id ="city" v-model="city" placeholder="city">
+
+                <label for="state"> State  </label>
+                <input id ="state" v-model="state" placeholder="state">
+            </p>
+                    <p>
+                <label for="zip"> Zip </label>
+                <input id ="zip" v-model="zip" placeholder="zip">
+            </p>
+            <p>
+                <input type="submit" value="submit">
+            </p>
+        </form>
+  </modal>
   </div>
 </template>
-
 <script>
 import axios from 'axios'
-  const toLower = text => {
-    return text.toString().toLowerCase()
-  }
-
-  const searchByName = (items, term) => {
-    if (term) {
-      return items.filter(item => toLower(item.name).includes(toLower(term)))
-    }
-
-    return items
-  }
-
-  export default {
-    name: 'TableSearch',
-    data: () => ({
-      search: null,
-      searched: [],
-      users: []
-    }),
-    methods: {
-      newUser () {
-        window.alert('Noop')
-      },
-      searchOnTable () {
-        this.searched = searchByName(this.users, this.search)
-      }
+export default {
+    data: function(){
+        return{
+            first_name: null,
+            last_name: null,
+            email: null,
+            address: null,
+            city: null,
+            state: null,
+            zip: null,
+        }
     },
-    created () {
-axios.get('http://127.0.0.1:5555/all_customers')
-        .then(res => {
-          this.users = res.data
-          this.searched = this.users
-        }).catch(err => {
-          alert(err)
-        })
+
+  methods: {
+  show () {
+    this.$modal.show('hello-world');
+  },
+  hide () {
+    this.$modal.hide('hello-world');
+  },
+        onSubmit() {
+            let new_customer ={
+                first_name: this.first_name,
+                last_name: this.last_name,
+                email: this.email,
+                address: this.address,
+                city: this.city,
+                state: this.state,
+                zip: this.zip
+            }
+            if(new_customer.email.includes('@')){
+
+                axios.post("http://127.0.0.1:5555/crud",{
+
+                    new_customer
+                })
+                .then(res => {
+                alert( "Customer: " + res.data + " was added")
+                }).catch(err => {
+                    alert(err)
+                })
+            } else {
+                alert("Not a proper email")
+            }
+
+        }
     }
-  }
+
+}
 </script>
-
-<style lang="scss" scoped>
-  .md-field {
-    width: 30%;
-    color: black;
-
-  }
-
+<style>
 
 </style>

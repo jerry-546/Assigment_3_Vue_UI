@@ -2,6 +2,8 @@ import Vue from 'vue'
 import Vuetify from 'vuetify'
 import VueRouter from 'vue-router'
 import VueMaterial from 'vue-material'
+import VModal from 'vue-js-modal'
+
 
 import App from './App'
 import Table from "./components/table_template.vue"
@@ -15,6 +17,8 @@ Vue.config.productionTip = false
 Vue.use(VueRouter)
 Vue.use(Vuetify)
 Vue.use(VueMaterial)
+Vue.use(VModal)
+
 
 
 const routes = [
