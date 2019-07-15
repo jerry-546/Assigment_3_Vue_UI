@@ -48,8 +48,9 @@
         <md-table-cell md-label="CITY" >{{ item.city }}</md-table-cell>
         <md-table-cell md-label="STATE" >{{ item.state}}</md-table-cell>
         <md-table-cell md-label="ZIP" >{{ item.zip }}</md-table-cell>
-        <md-table-cell md-label="TIMESTAMP" ><button @click="editCust(item)">Edit</button></md-table-cell>
-        <md-table-cell md-label="REMOVE" ><button @click="removeCust(item.id, index)">Remove</button></md-table-cell>
+        <md-table-cell md-label="TIMESTAMP" >{{ item.emailSent }}</md-table-cell>
+        <md-table-cell md-label="EDIT" v-if="isHidden == 'edit'"><button @click="editCust(item)">Edit</button></md-table-cell>
+        <md-table-cell md-label="REMOVE" v-if="isHidden == 'remove'"><button @click="removeCust(item.id, index)">Remove</button></md-table-cell>
 
       </md-table-row>
     </md-table>
