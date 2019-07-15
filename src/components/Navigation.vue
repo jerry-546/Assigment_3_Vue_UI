@@ -1,19 +1,35 @@
 <template>
-  <div>
-    <md-table v-model="users" md-card>
-      <md-table-toolbar>
-        <h1 class="md-title">Users</h1>
-      </md-table-toolbar>
+<table id = "AllCustomers">
+      <thead>
 
-      <md-table-row slot="md-table-row" slot-scope="{ item }">
-        <md-table-cell md-label="ID" md-sort-by="id" md-numeric>{{ item.id }}</md-table-cell>
-        <md-table-cell md-label="Name" md-sort-by="name">{{ item.name }}</md-table-cell>
-        <md-table-cell md-label="Email" md-sort-by="email">{{ item.email }}</md-table-cell>
-        <md-table-cell md-label="Gender" md-sort-by="gender">{{ item.gender }}</md-table-cell>
-        <md-table-cell md-label="Job Title" md-sort-by="title">{{ item.title }}</md-table-cell>
-      </md-table-row>
-    </md-table>
-  </div>
+        <th>Last Name</th>
+        <th>First Name</th>
+        <th>Email</th>
+        <th>Address</th>
+        <th>City</th>
+        <th>State</th>
+        <th>Zip</th>
+        <th>Timestamp</th>
+        <th v-if="isHidden == 'edit'">Edit</th>
+        <th v-if="isHidden == 'remove'">Remove</th>
+      </thead>
+
+      <tbody >
+        <tr v-for="(row, index) in rows" v-bind:key="row.id" v-bind:index = "index" >
+          <td>{{row.last_name}}</td>
+          <td>{{row.first_name}}</td>
+          <td> {{row.email}}</td>
+          <td>{{row.address}}</td>
+          <td>{{row.city}}</td>
+          <td>{{row.state}}</td>
+          <td>{{row.zip}}</td>
+          <td>{{row.emailSent}}</td>
+          <td v-if="isHidden == 'edit'" ><button @click="editCust(row)">Edit</button></td>
+          <td v-if="isHidden == 'remove'"><button @click="removeCust(row.id, index)">Remove</button></td>
+        </tr>
+      </tbody>
+    </table>
+
 </template>
 
 <script>
