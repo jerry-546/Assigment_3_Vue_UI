@@ -1,6 +1,5 @@
 <template>
-<div>
-<button @click="show">Click me</button>
+<div id = "modalDiv" v-on:click="show">
   <modal name="hello-world">
             <form ref = "form" class="custForm" @submit.prevent = "onSubmit()">
             <b-form-input
@@ -38,6 +37,7 @@
                 <input type="submit" value="submit">
             </p>
         </form>
+        <button v-on:click="hide()">Cancel</button>
   </modal>
   </div>
 </template>
@@ -53,16 +53,28 @@ export default {
             city: null,
             state: null,
             zip: null,
+            showModal: this.$route.meta.showModal
         }
     },
+      watch: {
+        '$route.meta' ({showModal}){
+            this.showModal = showModal
+        }
+    },
+    mounted(){
+                  console.log(this.showModal)
+            this.$modal.show('hello-world');
+    },
 
-  methods: {
-  show () {
-    this.$modal.show('hello-world');
-  },
-  hide () {
-    this.$modal.hide('hello-world');
-  },
+    methods: {
+    show () {
+      this.$modal.show('hello-world');
+    },
+    hide () {
+      //this.$modal.hide('hello-world');
+      this.$router.push('table')
+
+    },
         onSubmit() {
             let new_customer ={
                 first_name: this.first_name,
@@ -87,12 +99,17 @@ export default {
             } else {
                 alert("Not a proper email")
             }
-
+            this.$router.push('table')
         }
     }
 
 }
 </script>
 <style>
+#modalDiv{
+    width:100%;
+    height:280px;
+    top:100%;
+}
 
 </style>

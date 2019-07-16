@@ -3,17 +3,12 @@
 
     <router-link class = "navigation_button" to="/table" tag="button">Table</router-link>
     <router-link class = "navigation_button" to="/send" tag="button">Send Email</router-link>
-    <router-link class = "navigation_button" to="/add" tag="button">Add Customer</router-link>
+    <router-link class = "navigation_button" to="/table/add" tag="button">Add Customer</router-link>
      <router-link class = "navigation_button" to="/test" tag="button">Test</router-link>
     <!-- <router-link class = "navigation_button" to="/table/edit" tag="button">Edit</router-link>
     <router-link class = "navigation_button" to="/table/remove" tag="button">Remove</router-link> -->
 
     <router-view :key="$route.fullPath"></router-view>
-
-
-
-
-
   </div>
 
 </template>

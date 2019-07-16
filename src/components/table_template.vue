@@ -1,14 +1,17 @@
 <template>
 <div class="table">
+
     <md-table v-model="searched" md-sort="first_name" md-sort-order="asc" md-card md-fixed-header>
       <md-table-toolbar>
         <div  class="md-toolbar-section-start">
           <h1 class="md-title">AllCustomers</h1>
+
               <button v-on:click="removeApper">Remove</button>
               <button v-on:click="editApper">Edit</button>
+
         </div>
         <md-field md-clearable class="md-toolbar-section-end">
-          <md-input id = "nameSearch" placeholder="Search by first name..." v-model="search" @input="searchOnTable"> </md-input>
+          <md-input id = "nameSearch" placeholder="Search by first name or email..." v-model="search" @input="searchOnTable"> </md-input>
         </md-field>
       </md-table-toolbar>
 
@@ -38,14 +41,24 @@
 import axios from 'axios'
 
   const toLower = text => {
+
     return text.toString().toLowerCase()
+
   }
 
   const searchByName = (items, term) => {
-    if (term) {
-      return items.filter(item => toLower(item.first_name).includes(toLower(term)))
-    }
 
+    if (term) {
+      const resultByName = items.filter(item => toLower(item.first_name).includes(toLower(term)))
+
+      if(resultByName.length == 0){
+        const resultByEmail = items.filter(item => toLower(item.email).includes(toLower(term)))
+        return resultByEmail
+      }
+      else{
+         return resultByName
+      }
+    }
     return items
   }
 
@@ -53,7 +66,7 @@ export default {
   name: 'Table',
 
   data: () => ({
-
+        check: 'Checl',
         search: null,
         searched: [],
         isHidden: null,

@@ -1,10 +1,7 @@
 <template>
-
-    <b-modal
-    id= "customerAddModal"
-    ref= "modal"
-    title= "Add Customer">
-        <form ref = "form" class="custForm" @submit.prevent = "onSubmit()">
+<div id = "modalDiv" v-on:click="show">
+  <modal name="hello-world">
+            <form ref = "form" class="custForm" @submit.prevent = "onSubmit()">
             <b-form-input
             id="first_name_input"
             v-model="first_name"
@@ -40,14 +37,13 @@
                 <input type="submit" value="submit">
             </p>
         </form>
-    </b-modal>
+        <button v-on:click="hide()">Cancel</button>
+  </modal>
+  </div>
 </template>
-
 <script>
-
 import axios from 'axios'
 export default {
-    name: "customerForm",
     data: function(){
         return{
             first_name: null,
@@ -57,9 +53,28 @@ export default {
             city: null,
             state: null,
             zip: null,
+            showModal: this.$route.meta.showModal
         }
     },
-    methods:{
+      watch: {
+        '$route.meta' ({showModal}){
+            this.showModal = showModal
+        }
+    },
+    mounted(){
+                  console.log(this.showModal)
+            this.$modal.show('hello-world');
+    },
+
+    methods: {
+    show () {
+      this.$modal.show('hello-world');
+    },
+    hide () {
+      //this.$modal.hide('hello-world');
+      this.$router.push('table')
+
+    },
         onSubmit() {
             let new_customer ={
                 first_name: this.first_name,
@@ -84,15 +99,17 @@ export default {
             } else {
                 alert("Not a proper email")
             }
-
+            this.$router.push('table')
         }
     }
 
 }
 </script>
-
-
-<style scoped>
+<style>
+#modalDiv{
+    width:100%;
+    height:280px;
+    top:100%;
+}
 
 </style>
-

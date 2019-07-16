@@ -8,7 +8,7 @@ import VModal from 'vue-js-modal'
 import App from './App'
 import Table from "./components/table_template.vue"
 import Send from "./components/email.vue"
-import AddCust from "./components/customerAddForm.vue"
+// import AddCust from "./components/customerAddForm.vue"
 import Test from "./components/Navigation.vue"
 
 
@@ -25,7 +25,7 @@ const routes = [
   {
     path: '/table',
     name: 'Table',
-    component: Table
+    component: Table,
   },
 
   {
@@ -33,16 +33,14 @@ const routes = [
     name: 'Send',
     component: Send
   },
-  {
-    path: '/add',
-    name: "Add",
-    component: AddCust
-  },
+
   {
     path: '/test',
     name: "Test",
-    component: Test
-
+    component: Test,
+    meta: {
+      showModal: true
+    }
   }
 
 
