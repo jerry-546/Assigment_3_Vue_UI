@@ -53,8 +53,9 @@ export default {
             city: null,
             state: null,
             zip: null,
-            showModal: this.$route.meta.showModal
+            showModal: this.$route.params
         }
+
     },
       watch: {
         '$route.meta' ({showModal}){
@@ -62,18 +63,15 @@ export default {
         }
     },
     mounted(){
-                  console.log(this.showModal)
-            this.$modal.show('hello-world');
+        this.$modal.show('hello-world');
     },
 
     methods: {
     show () {
-      this.$modal.show('hello-world');
+        this.$modal.show('hello-world');
     },
     hide () {
-      //this.$modal.hide('hello-world');
       this.$router.push('table')
-
     },
         onSubmit() {
             let new_customer ={

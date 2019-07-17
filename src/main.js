@@ -8,7 +8,8 @@ import VModal from 'vue-js-modal'
 import App from './App'
 import Table from "./components/table_template.vue"
 import Send from "./components/email.vue"
-// import AddCust from "./components/customerAddForm.vue"
+import AddCust from "./components/customerAddForm.vue"
+import Edit from "./components/customerEditForm"
 import Test from "./components/Navigation.vue"
 
 
@@ -33,6 +34,21 @@ const routes = [
     name: 'Send',
     component: Send
   },
+  {
+    path: '/edit/:row',
+    name: 'Edit',
+    component: Edit,
+    props: true
+
+  },
+  {
+    path: '/add',
+    name: "ADD",
+    component: AddCust,
+    meta: {
+      showModal: true
+    }
+  },
 
   {
     path: '/test',
@@ -47,8 +63,9 @@ const routes = [
 ]
 
 const router = new VueRouter({
-  routes,
-  mode: 'history'
+  mode: 'history',
+  routes
+
 })
 
 new Vue({

@@ -30,8 +30,8 @@
         <md-table-cell md-label="STATE" md-sort-by="state">{{ item.state}}</md-table-cell>
         <md-table-cell md-label="ZIP" >{{ item.zip }}</md-table-cell>
         <md-table-cell md-label="TIMESTAMP" >{{ item.emailSent }}</md-table-cell>
-        <md-table-cell md-label="EDIT" v-if="isHidden == 'edit'"><button @click="editCust(item)">Edit</button></md-table-cell>
-        <md-table-cell md-label="REMOVE" v-if="isHidden == 'remove'"><button @click="removeCust(item.id, index)">Remove</button></md-table-cell>
+        <md-table-cell md-label="EDIT" v-if="isHidden == 'edit'"> <button @click="editCust(item)">Remove {{item.first_name}}</button> </md-table-cell>
+        <md-table-cell md-label="REMOVE" v-if="isHidden == 'remove'"><button @click="removeCust(item.id, index)">Remove {{item.first_name}}</button></md-table-cell>
       </md-table-row>
     </md-table>
   </div>
@@ -101,7 +101,7 @@ export default {
         }
         axios.delete('http://127.0.0.1:5555/crud', {data: payload})
         .then(res =>{
-          alert('Customer: '+res.data + ' was deleted')
+          alert('Customer: '+res.data + ' was deleted' )
         }).catch(err=>{
           alert(err)
         })
@@ -109,9 +109,13 @@ export default {
       },
 
       editCust(row){
-        alert("id "+ row.id )
-        console.log(row)
+
+        this.$router.push({name:"Edit", params:{ row}})
+     },
+     beforeRouteUpdate(to, from, next){
+       next();
      }
+
 
    },
 
@@ -170,3 +174,4 @@ export default {
     max-width: 300px;
   }
 </style>
+
