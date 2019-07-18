@@ -3,6 +3,14 @@
         <select class = "select-css" v-model="email" @change="update_email_info($event)">
           <option  v-for="row in rows" v-bind:key = "row.id" v-bind:value="row.email" :id="row.id"  > {{row.email}} </option>
         </select>
+    <div>
+        <label>Subject</label>
+        <v-text-field v-model="subject"></v-text-field>
+        <label>Message</label>
+        <v-text-field v-model="message"></v-text-field>
+        <label>SMTP server</label>
+        <v-text-field v-model="smtp"></v-text-field>
+    </div>
         <button v-on:click="send_email">SEND EMAIL</button>
     </div>
 </template>
@@ -20,10 +28,20 @@ export default {
       return {
         email: '',
         emailID: '',
+        subject: '',
+        message: '',
+        smtp: '',
+        rows: []
       }
     },
     mounted(){
       axios.get('http://127.0.0.1:5555/all_customers')
+        .then(res => {
+          this.rows = res.data
+          this.searched = this.rows
+        }).catch(err => {
+          alert(err)
+        })
     },
      methods: {
     //Getting information to send email to chosen  email
@@ -37,10 +55,14 @@ export default {
       //Sends email and send alert to confirm email was sent
      send_email: function(){
       axios.post("http://127.0.0.1:5555/send",{
-        id: this.emailID,
-        email: this.email
+        email: this.email,
+        subject: this.subject,
+        message: this.message,
+        smtp: this.smtp
+
       })
       .then(res => {
+        console.log(res.data)
           alert("Email was sent to "+ res.data)
        }).catch(err => {
         alert(err)

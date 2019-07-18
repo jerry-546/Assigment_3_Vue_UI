@@ -30,7 +30,7 @@
         <md-table-cell md-label="STATE" md-sort-by="state">{{ item.state}}</md-table-cell>
         <md-table-cell md-label="ZIP" >{{ item.zip }}</md-table-cell>
         <md-table-cell md-label="TIMESTAMP" >{{ item.emailSent }}</md-table-cell>
-        <md-table-cell md-label="EDIT" v-if="isHidden == 'edit'"> <button @click="editCust(item)">Remove {{item.first_name}}</button> </md-table-cell>
+        <md-table-cell md-label="EDIT" v-if="isHidden == 'edit'"> <button @click="editCust(item)">Edit {{item.first_name}}</button> </md-table-cell>
         <md-table-cell md-label="REMOVE" v-if="isHidden == 'remove'"><button @click="removeCust(item.id, index)">Remove {{item.first_name}}</button></md-table-cell>
       </md-table-row>
     </md-table>
@@ -93,6 +93,7 @@ export default {
      },
       editApper(){
        this.isHidden = 'edit'
+
      },
 
      removeCust(cid){
@@ -115,12 +116,7 @@ export default {
      beforeRouteUpdate(to, from, next){
        next();
      }
-
-
    },
-
-
-
 }
 </script>
 
