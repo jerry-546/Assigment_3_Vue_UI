@@ -21,19 +21,20 @@
       </md-table-empty-state>
 
       <md-table-row slot="md-table-row" slot-scope="{ item }">
-        <md-table-cell md-label="ID" md-sort-by="id" md-numeric>{{ item.id }}</md-table-cell>
-        <md-table-cell md-label="FIRST NAME" md-sort-by="first_name">{{ item.first_name }}</md-table-cell>
-        <md-table-cell md-label="LAST NAME" md-sort-by="last_name">{{ item.last_name }}</md-table-cell>
-        <md-table-cell md-label="EMAIL" md-sort-by="email">{{ item.email }}</md-table-cell>
+        <md-table-cell md-label="ID"  md-numeric>{{ item.id }}</md-table-cell>
+        <md-table-cell md-label="FIRST NAME" >{{ item.first_name }}</md-table-cell>
+        <md-table-cell md-label="LAST NAME" >{{ item.last_name }}</md-table-cell>
+        <md-table-cell md-label="EMAIL" >{{ item.email }}</md-table-cell>
         <md-table-cell md-label="ADDRESS" >{{ item.address }}</md-table-cell>
-        <md-table-cell md-label="CITY" md-sort-by="city" >{{ item.city }}</md-table-cell>
-        <md-table-cell md-label="STATE" md-sort-by="state">{{ item.state}}</md-table-cell>
+        <md-table-cell md-label="CITY"  >{{ item.city }}</md-table-cell>
+        <md-table-cell md-label="STATE" >{{ item.state}}</md-table-cell>
         <md-table-cell md-label="ZIP" >{{ item.zip }}</md-table-cell>
         <md-table-cell md-label="TIMESTAMP" >{{ item.emailSent }}</md-table-cell>
         <md-table-cell md-label="EDIT" v-if="isHidden == 'edit'"> <button @click="editCust(item)">Edit {{item.first_name}}</button> </md-table-cell>
         <md-table-cell md-label="REMOVE" v-if="isHidden == 'remove'"><button @click="removeCust(item.id, index)">Remove {{item.first_name}}</button></md-table-cell>
       </md-table-row>
     </md-table>
+
   </div>
 </template>
 
@@ -41,16 +42,11 @@
 import axios from 'axios'
 
   const toLower = text => {
-
     return text.toString().toLowerCase()
-
   }
-
   const searchByName = (items, term) => {
-
     if (term) {
       const resultByName = items.filter(item => toLower(item.first_name).includes(toLower(term)))
-
       if(resultByName.length == 0){
         const resultByEmail = items.filter(item => toLower(item.email).includes(toLower(term)))
         return resultByEmail
@@ -70,31 +66,32 @@ export default {
         search: null,
         searched: [],
         isHidden: null,
-        rows: []
+        rows: [],
+        page: 1,
+        perPage: 10,
+        totalRecords: 0
     }),
-  created(){
-        axios.get('http://127.0.0.1:5555/all_customers')
-        .then(res => {
-          this.rows = res.data
-          this.searched = this.rows
-        }).catch(err => {
-          alert(err)
-        })
+ mounted(){
+    this.loadItems()
   },
    methods: {
-
      searchOnTable(){
        this.searched = searchByName(this.rows, this.search)
-
      },
-
      removeApper(){
        this.isHidden = 'remove'
      },
       editApper(){
        this.isHidden = 'edit'
-
      },
+    loadItems() {
+        var url = "http://localhost:5555/all_customers/"+this.page+"/"+this.perPage
+        return axios.get(url).then(response => {
+        this.totalRecords = response.totalRecords
+         this.rows = response.data;
+         this.searched = this.rows
+      });
+    },
 
      removeCust(cid){
         let payload = {

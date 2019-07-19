@@ -4,6 +4,8 @@
     <router-link class = "navigation_button" to="/table" tag="button">Table</router-link>
     <router-link class = "navigation_button" to="/send" tag="button">Send Email</router-link>
     <router-link class = "navigation_button" to="/add" tag="button">Add Customer</router-link>
+    <router-link class = "navigation_button" to="/test" tag="button">Add Customer</router-link>
+
 
 
     <router-view :key="$route.fullPath"></router-view>

@@ -3,6 +3,9 @@ import Vuetify from 'vuetify'
 import VueRouter from 'vue-router'
 import VueMaterial from 'vue-material'
 import VModal from 'vue-js-modal'
+import VueGoodTablePlugin from 'vue-good-table'
+
+import 'vue-good-table/dist/vue-good-table.css'
 
 
 import App from './App'
@@ -19,6 +22,7 @@ Vue.use(VueRouter)
 Vue.use(Vuetify)
 Vue.use(VueMaterial)
 Vue.use(VModal)
+Vue.use(VueGoodTablePlugin)
 
 
 
