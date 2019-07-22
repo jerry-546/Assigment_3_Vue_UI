@@ -5,7 +5,8 @@ import VueMaterial from 'vue-material'
 import VModal from 'vue-js-modal'
 import VueGoodTablePlugin from 'vue-good-table'
 
-import 'vue-good-table/dist/vue-good-table.css'
+
+import 'vuetify/dist/vuetify.min.css'
 
 
 import App from './App'
@@ -18,11 +19,17 @@ import Test from "./components/Navigation.vue"
 
 
 Vue.config.productionTip = false
+
 Vue.use(VueRouter)
 Vue.use(Vuetify)
 Vue.use(VueMaterial)
 Vue.use(VModal)
 Vue.use(VueGoodTablePlugin)
+
+Vue.config.errorHandler = function (err, vm, info) {
+  var errors = []
+  errors.push(err, vm, info)
+}
 
 
 

@@ -1,157 +1,188 @@
 <template>
-    <vue-good-table
-  mode="remote"
-  @on-page-change="onPageChange"
-  @on-sort-change="onSortChange"
-  @on-column-filter="onColumnFilter"
-  @on-per-page-change="onPerPageChange"
-  :totalRows="totalRecords"
-  :isLoading.sync="isLoading"
-  :pagination-options="{
-    enabled: true,
-    perPage: this.serverParams.perPage,
-    perPageDropdown: [1,5,10],
-    nextLabel: 'next',
-    prevLabel: 'prev',
-  }"
-  :rows="rows"
-  :columns="columns">
-    <div slot="table-actions">
-      <button> Remove </button>
-      <button> Edit </button>
-    </div>
-    <template slot="table-row" slot-scope="props">
-       <span v-if="(props.column.field == 'remove' )">
-         <button>REMOVE</button>
-         </span>
+<div class="table">
 
+    <md-table v-if="rows != []" v-model="rows" :md-sort.sync="sortBy" :md-sort-order.sync="ascOrDesc" :md-sort-fn="sortTable"  md-card md-fixed-header>
+      <md-table-toolbar>
+        <div  class="md-toolbar-section-start">
+          <h1 class="md-title">AllCustomers</h1>
 
-    </template>
-  </vue-good-table>
+              <v-btn  v-on:click="editTable('remove')">Remove</v-btn>
+              <v-btn v-on:click="editTable('edit')">Edit</v-btn>
+              <v-btn v-if="isHidden != 'done'" v-on:click="editTable('done')">Done</v-btn>
+
+        </div>
+        <md-field md-clearable class="md-toolbar-section-end">
+          <md-input id = "nameSearch" placeholder="Search by first name or email..." v-model="search" @input="changeInParams()" > </md-input>
+        </md-field>
+      </md-table-toolbar>
+
+      <md-table-empty-state
+        md-label="No users found"
+        :md-description="`No user found for this query. Try a different search term or create a new user.`">
+      </md-table-empty-state>
+
+      <md-table-row  slot="md-table-row" slot-scope="{ item }" >
+        <md-table-cell md-label="ID" md-sort-by="id" md-numeric>{{ item.id }}</md-table-cell>
+        <md-table-cell md-label="FIRST NAME" md-sort-by="first_name" >{{ item.first_name }}</md-table-cell>
+        <md-table-cell md-label="LAST NAME" md-sort-by="last_name">{{ item.last_name }}</md-table-cell>
+        <md-table-cell md-label="EMAIL" md-sort-by="email">{{ item.email }}</md-table-cell>
+        <md-table-cell md-label="ADDRESS" md-sort-by="address">{{ item.address }}</md-table-cell>
+        <md-table-cell md-label="CITY" md-sort-by="city" >{{ item.city }}</md-table-cell>
+        <md-table-cell md-label="STATE" md-sort-by="state">{{ item.state}}</md-table-cell>
+        <md-table-cell md-label="ZIP" >{{ item.zip }}</md-table-cell>
+        <md-table-cell md-label="TIMESTAMP" >{{ item.emailSent }}</md-table-cell>
+        <md-table-cell md-label="EDIT" v-if="isHidden == 'edit'"> <v-btn @click="editCust(item)">Edit {{item.first_name}}</v-btn> </md-table-cell>
+        <md-table-cell md-label="REMOVE" v-if="isHidden == 'remove'"><v-btn @click="removeCust(item.id, index)">Remove {{item.first_name}}</v-btn></md-table-cell>
+      </md-table-row>
+    </md-table>
+    <p> Page: {{page}} of {{Math.ceil(this.totalRec/ this.perPage)}} </p><p>Records per Page: <v-text-field v-model="perPage" v-on:input="changeInParams()"></v-text-field> Total Records: {{totalRec}}</p>
+    <p> <v-btn v-on:click="prevPage">PREVIOUS</v-btn><v-btn v-on:click="nextPage">NEXT</v-btn></p>
+</div>
 </template>
+
 <script>
 import axios from 'axios'
 
 
+
 export default {
-    data() {
-  return {
-    interactWith: 'nope',
-    isLoading: false,
+  name: 'Table',
+
+  data: () => ({
+        search: "",
+        searching: "NOT_SEARCHING",
+        isHidden: 'done',
         rows: [],
-    totalRecords: 0,
-    serverParams: {
-      columnFilters: {
-      },
-      sort: {
-        field: 'first_name',
-        type: '',
-      },
-      page: 1,
-      perPage: 10
-    },
-    columns: [
-      {
-          label: 'ID',
-          field: 'id',
-      },
-      {
-          label: 'First Name',
-          field: 'first_name',
-          filterable: true
-      },
-      {
-          label: 'Last Name',
-          field: 'last_name',
-          filterable: true
-      },
-      {
-          label: 'Email',
-          field: 'email',
-          filterable: true
-      },
-      {
-          label: 'Address',
-          field: 'address',
-          filterable: true
-      },
-      {
-          label: 'City',
-          field: 'city',
-          filterable: true
-      },
-      {
-          label: 'State',
-          field: 'state',
-          filterable: true
-      },
-      {
-          label: 'Zip',
-          field: 'zip',
-          filterable: true
-      },
-      {
-          label: 'Email Timestamp',
-          field: 'email_sent',
-          filterable: true
-      },
-      {
-          label: 'REMOVE',
-          field: 'remove'
-      },
-      {
-          label: 'EDIT',
-          field: 'edit'
-      },
-
-    ],
-
-  };
-},
-mounted(){
+        page: 1,
+        perPage: 5,
+        totalRec: 0,
+        sortBy: "none",
+        ascOrDesc: "asc",
+    }),
+ created(){
     this.loadItems()
-},
-methods: {
-    updateParams(newProps) {
-      this.serverParams = Object.assign({}, this.serverParams, newProps);
-    },
+    this.totalRecords()
+  },
+   methods: {
+     sortTable(){
+       this.loadItems()
+     },
 
-    onPageChange(params) {
-      this.updateParams({page: params.currentPage});
-      this.loadItems();
-    },
 
-    onPerPageChange(params) {
-      console.log(params)
-      this.updateParams({perPage: params.currentPerPage});
-      this.loadItems();
-    },
+     nextPage(){
+      if(this.totalRec > (this.page * this.perPage) ){
+        this.page += 1
+        this.loadItems()
+      }
 
-    onSortChange(params) {
-      this.updateParams({
-        sort: [{
-          type: params.sortType,
-          field: this.columns[params.columnIndex].field,
-        }],
-      });
-      this.loadItems();
-    },
+     },
+     prevPage(){
+       if(this.page > 1){
+        this.page -= 1
+        this.loadItems()
+       }
 
-    onColumnFilter(params) {
-      this.updateParams(params);
-      this.loadItems();
-    },
+     },
+     changeInParams(){
+       if( 0 <= this.perPage &&  this.perPage <= 100){
+        if(this.search.length){
+        this.searching = this.search
+        } else {
+          this.searching = "NOT_SEARCHING"
+        }
+        this.page = 1
+        this.loadItems()
+       } else {
+         alert("Only numbers between 0 - 100 please")
+       }
+     },
+     editTable(editHow){
+      this.isHidden = editHow
 
-    // load items is what brings back the rows from server
-    loadItems() {
-
-        var url = "http://localhost:5555/all_customers/"+this.serverParams.page+"/"+this.serverParams.perPage
+     },
+     totalRecords(){
+        var url = 'http://localhost:5555/customerCount'
         return axios.get(url).then(response => {
-        this.totalRecords = response.totalRecords
+          this.totalRec = response.data
+        });
+     },
+    loadItems() {
+        var url = "http://localhost:5555/all_customers/"+this.page+"/"+this.perPage + "/" + this.sortBy + "/" + this.ascOrDesc + '/' + this.searching
+        return axios.get(url).then(response => {
          this.rows = response.data;
       });
-    }
-}
+    },
 
+    removeCust(cid){
+        let payload = {
+          id: cid
+        }
+        axios.delete('http://127.0.0.1:5555/crud', {data: payload})
+        .then(res =>{
+          alert('Customer: '+res.data + ' was deleted' )
+        }).catch(err=>{
+          alert(err)
+        })
+
+    },
+    editCust(row){
+        this.$router.push({name:"Edit", params:{ row}})
+    },
+    beforeRouteUpdate(to, from, next){
+       next();
+     }
+    },
 }
 </script>
+
+<!-- Add "scoped" attribute to limit CSS to this component only -->
+<style scoped>
+  /* .table {
+    font-family: 'Open Sans', sans-serif;
+    width: 750px;
+    border-collapse: collapse;
+    border: 3px solid rgb(254, 254, 254);
+    margin: 10px 10px 0 10px;
+  }
+
+  .table th  {
+    text-transform: uppercase;
+    text-align: center;
+    background: rgb(254, 0, 0);
+    color: #FFF;
+    cursor: pointer;
+    padding: 8px;
+    min-width: 30px;
+  }
+  .table th:hover {
+          background: #ff8a8a;
+        }
+  .table td {
+    text-align: left;
+    padding: 8px;
+    border-right: 2px solid rgb(255, 0, 0);
+  }
+  .table td:last-child {
+    border-right: none;
+  }
+  .table tbody tr:nth-child(2n) td {
+    background: rgb(252, 190, 190);
+  }
+  .table v-btn {
+ background-color: rgb(255, 78, 78);
+  border: none;
+  color: white;
+  padding: 10px 25px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+}
+.table v-btn:hover {
+          background: #ff8a8a;
+        }
+  .md-field {
+    max-width: 300px;
+  } */
+</style>
+

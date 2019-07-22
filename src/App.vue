@@ -1,10 +1,10 @@
 <template>
   <div id="app">
 
-    <router-link class = "navigation_button" to="/table" tag="button">Table</router-link>
-    <router-link class = "navigation_button" to="/send" tag="button">Send Email</router-link>
-    <router-link class = "navigation_button" to="/add" tag="button">Add Customer</router-link>
-    <router-link class = "navigation_button" to="/test" tag="button">Add Customer</router-link>
+    <router-link class = "navigation_button" to="/table" tag="v-btn">Table</router-link>
+    <router-link class = "navigation_button" to="/send" tag="v-btn">Send Email</router-link>
+    <router-link class = "navigation_button" to="/add" tag="v-btn">Add Customer</router-link>
+    <router-link class = "navigation_button" to="/test" tag="v-btn">Add Customer</router-link>
 
 
 
@@ -31,7 +31,7 @@ export default {
   display: inline-block;
   font-size: 16px;
 }
-.navigation_button:hover {
+/* .navigation_button:hover {
           background: #ff8a8a;
-        }
+        } */
 </style>

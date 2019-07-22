@@ -1,99 +1,126 @@
 <template>
 <div class="table">
 
-    <md-table v-model="searched" md-sort="first_name" md-sort-order="asc" md-card md-fixed-header>
+    <md-table id ="customers" v-if="rows != []" v-model="rows" :md-sort.sync="sortBy" :md-sort-order.sync="ascOrDesc" :md-sort-fn="sortTable"  md-card md-fixed-header>
       <md-table-toolbar>
         <div  class="md-toolbar-section-start">
           <h1 class="md-title">AllCustomers</h1>
 
-              <button v-on:click="removeApper">Remove</button>
-              <button v-on:click="editApper">Edit</button>
+              <v-btn  v-on:click="editTable('remove')">Remove</v-btn>
+              <v-btn v-on:click="editTable('edit')">Edit</v-btn>
+              <v-btn v-if="isHidden != 'done'" v-on:click="editTable('done')">Done</v-btn>
 
         </div>
         <md-field md-clearable class="md-toolbar-section-end">
-          <md-input id = "nameSearch" placeholder="Search by first name or email..." v-model="search" @input="searchOnTable"> </md-input>
+          <md-input id = "nameSearch" placeholder="Search by first name or email..." v-model="search" @input="changeInParams()" > </md-input>
         </md-field>
       </md-table-toolbar>
 
       <md-table-empty-state
         md-label="No users found"
-        :md-description="`No user found for this '${search}' query. Try a different search term or create a new user.`">
+        :md-description="`No user found for this query. Try a different search term or create a new user.`">
       </md-table-empty-state>
 
-      <md-table-row slot="md-table-row" slot-scope="{ item }">
-        <md-table-cell md-label="ID"  md-numeric>{{ item.id }}</md-table-cell>
-        <md-table-cell md-label="FIRST NAME" >{{ item.first_name }}</md-table-cell>
-        <md-table-cell md-label="LAST NAME" >{{ item.last_name }}</md-table-cell>
-        <md-table-cell md-label="EMAIL" >{{ item.email }}</md-table-cell>
-        <md-table-cell md-label="ADDRESS" >{{ item.address }}</md-table-cell>
-        <md-table-cell md-label="CITY"  >{{ item.city }}</md-table-cell>
-        <md-table-cell md-label="STATE" >{{ item.state}}</md-table-cell>
+      <md-table-row  slot="md-table-row" slot-scope="{ item }" >
+        <md-table-cell md-label="ID" md-sort-by="id" md-numeric>{{ item.id }}</md-table-cell>
+        <md-table-cell md-label="FIRST NAME" md-sort-by="first_name" >{{ item.first_name }}</md-table-cell>
+        <md-table-cell md-label="LAST NAME" md-sort-by="last_name">{{ item.last_name }}</md-table-cell>
+        <md-table-cell md-label="EMAIL" md-sort-by="email">{{ item.email }}</md-table-cell>
+        <md-table-cell md-label="ADDRESS" md-sort-by="address">{{ item.address }}</md-table-cell>
+        <md-table-cell md-label="CITY" md-sort-by="city" >{{ item.city }}</md-table-cell>
+        <md-table-cell md-label="STATE" md-sort-by="state">{{ item.state}}</md-table-cell>
         <md-table-cell md-label="ZIP" >{{ item.zip }}</md-table-cell>
         <md-table-cell md-label="TIMESTAMP" >{{ item.emailSent }}</md-table-cell>
-        <md-table-cell md-label="EDIT" v-if="isHidden == 'edit'"> <button @click="editCust(item)">Edit {{item.first_name}}</button> </md-table-cell>
-        <md-table-cell md-label="REMOVE" v-if="isHidden == 'remove'"><button @click="removeCust(item.id, index)">Remove {{item.first_name}}</button></md-table-cell>
+        <md-table-cell md-label="EDIT" v-if="isHidden == 'edit'"> <v-btn @click="editCust(item)">Edit {{item.first_name}}</v-btn> </md-table-cell>
+        <md-table-cell md-label="REMOVE" v-if="isHidden == 'remove'"><v-btn @click="removeCust(item.id, index)">Remove {{item.first_name}}</v-btn></md-table-cell>
       </md-table-row>
     </md-table>
-
+<div class="text-xs-center">
+    <v-pagination
+      v-model="page"
+      :length="3"
+      :total-visible="7"
+    ></v-pagination>
   </div>
+    <p> Page: {{page}} of {{Math.ceil(this.totalRec/ this.perPage)}} </p><p>Records per Page: <v-text-field v-model="perPage" v-on:input="changeInParams()"></v-text-field> Total Records: {{totalRec}}</p>
+    <p> <v-btn v-on:click="prevPage">PREVIOUS</v-btn><v-btn v-on:click="nextPage">NEXT</v-btn></p>
+</div>
 </template>
 
 <script>
 import axios from 'axios'
 
-  const toLower = text => {
-    return text.toString().toLowerCase()
-  }
-  const searchByName = (items, term) => {
-    if (term) {
-      const resultByName = items.filter(item => toLower(item.first_name).includes(toLower(term)))
-      if(resultByName.length == 0){
-        const resultByEmail = items.filter(item => toLower(item.email).includes(toLower(term)))
-        return resultByEmail
-      }
-      else{
-         return resultByName
-      }
-    }
-    return items
-  }
+
 
 export default {
   name: 'Table',
 
   data: () => ({
-        check: 'Checl',
-        search: null,
-        searched: [],
-        isHidden: null,
+        search: "",
+        searching: "NOT_SEARCHING",
+        isHidden: 'done',
         rows: [],
         page: 1,
-        perPage: 10,
-        totalRecords: 0
+        perPage: 5,
+        totalRec: 0,
+        sortBy: "none",
+        ascOrDesc: "asc",
     }),
- mounted(){
+ created(){
     this.loadItems()
+    this.totalRecords()
   },
    methods: {
-     searchOnTable(){
-       this.searched = searchByName(this.rows, this.search)
+     sortTable(){
+       this.loadItems()
      },
-     removeApper(){
-       this.isHidden = 'remove'
+
+
+     nextPage(){
+      if(this.totalRec > (this.page * this.perPage) ){
+        this.page += 1
+        this.loadItems()
+      }
+
      },
-      editApper(){
-       this.isHidden = 'edit'
+     prevPage(){
+       if(this.page > 1){
+        this.page -= 1
+        this.loadItems()
+       }
+
+     },
+     changeInParams(){
+       if( 0 <= this.perPage &&  this.perPage <= 100){
+        if(this.search.length){
+        this.searching = this.search
+        } else {
+          this.searching = "NOT_SEARCHING"
+        }
+        this.page = 1
+        this.loadItems()
+       } else {
+         alert("Only numbers between 0 - 100 please")
+       }
+     },
+     editTable(editHow){
+      this.isHidden = editHow
+
+     },
+     totalRecords(){
+        var url = 'http://localhost:5555/customerCount'
+        return axios.get(url).then(response => {
+          this.totalRec = response.data
+        });
      },
     loadItems() {
-        var url = "http://localhost:5555/all_customers/"+this.page+"/"+this.perPage
+        var url = "http://localhost:5555/all_customers/"+this.page+"/"+this.perPage + "/" + this.sortBy + "/" + this.ascOrDesc + '/' + this.searching
         return axios.get(url).then(response => {
-        this.totalRecords = response.totalRecords
          this.rows = response.data;
-         this.searched = this.rows
       });
     },
 
-     removeCust(cid){
+    removeCust(cid){
         let payload = {
           id: cid
         }
@@ -104,22 +131,20 @@ export default {
           alert(err)
         })
 
-      },
-
-      editCust(row){
-
+    },
+    editCust(row){
         this.$router.push({name:"Edit", params:{ row}})
-     },
-     beforeRouteUpdate(to, from, next){
+    },
+    beforeRouteUpdate(to, from, next){
        next();
      }
-   },
+    },
 }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-  .table {
+  /* .table {
     font-family: 'Open Sans', sans-serif;
     width: 750px;
     border-collapse: collapse;
@@ -150,7 +175,7 @@ export default {
   .table tbody tr:nth-child(2n) td {
     background: rgb(252, 190, 190);
   }
-  .table button {
+  .table v-btn {
  background-color: rgb(255, 78, 78);
   border: none;
   color: white;
@@ -160,11 +185,33 @@ export default {
   display: inline-block;
   font-size: 16px;
 }
-.table button:hover {
+.table v-btn:hover {
           background: #ff8a8a;
         }
   .md-field {
     max-width: 300px;
-  }
+  } */
+  #customers {
+  font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+#customers td, #customers th {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+#customers tr:nth-child(even){background-color: #f2f2f2;}
+
+#customers tr:hover {background-color: #ddd;}
+
+#customers th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: left;
+  background-color: #4CAF50;
+  color: white;
+}
 </style>
 
