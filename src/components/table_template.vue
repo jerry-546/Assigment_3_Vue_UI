@@ -1,7 +1,7 @@
 <template>
 <div class="table">
 
-    <md-table id ="customers" v-if="rows != []" v-model="rows" :md-sort.sync="sortBy" :md-sort-order.sync="ascOrDesc" :md-sort-fn="sortTable"  md-card md-fixed-header>
+    <md-table id ="customers"  v-if="rows != []" v-model="rows" :md-sort.sync="sortBy" :md-sort-order.sync="ascOrDesc" :md-sort-fn="sortTable"  md-card md-fixed-header>
       <md-table-toolbar>
         <div  class="md-toolbar-section-start">
           <h1 class="md-title">AllCustomers</h1>
@@ -11,8 +11,8 @@
               <v-btn v-if="isHidden != 'done'" v-on:click="editTable('done')">Done</v-btn>
 
         </div>
-        <md-field md-clearable class="md-toolbar-section-end">
-          <md-input id = "nameSearch" placeholder="Search by first name or email..." v-model="search" @input="changeInParams()" > </md-input>
+        <md-field md-clearable class="md-toolbar-section-front">
+          <md-input id = "nameSearch" placeholder="Search by first name..." v-model="search" @input="changeInParams()" > </md-input>
         </md-field>
       </md-table-toolbar>
 

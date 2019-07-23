@@ -11,7 +11,7 @@
         <label>SMTP server</label>
         <v-text-field v-model="smtp"></v-text-field>
     </div>
-        <button v-on:click="send_email">SEND EMAIL</button>
+        <v-btn v-on:click="send_email">SEND EMAIL</v-btn>
     </div>
 </template>
 <script>
@@ -35,7 +35,7 @@ export default {
       }
     },
     mounted(){
-      axios.get('http://127.0.0.1:5555/all_customers')
+      axios.get('http://127.0.0.1:5555/send')
         .then(res => {
           this.rows = res.data
           this.searched = this.rows
