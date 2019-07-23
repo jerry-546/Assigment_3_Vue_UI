@@ -7,6 +7,7 @@ import VueGoodTablePlugin from 'vue-good-table'
 
 
 import 'vuetify/dist/vuetify.min.css'
+import 'vue-material/dist/vue-material.min.css'
 
 
 import App from './App'

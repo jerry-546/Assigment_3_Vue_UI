@@ -36,14 +36,9 @@
       </md-table-row>
     </md-table>
 <div class="text-xs-center">
-    <v-pagination
-      v-model="page"
-      :length="3"
-      :total-visible="7"
-    ></v-pagination>
   </div>
+     <p> <v-btn v-on:click="prevPage">PREVIOUS</v-btn><v-btn v-on:click="nextPage">NEXT</v-btn></p>
     <p> Page: {{page}} of {{Math.ceil(this.totalRec/ this.perPage)}} </p><p>Records per Page: <v-text-field v-model="perPage" v-on:input="changeInParams()"></v-text-field> Total Records: {{totalRec}}</p>
-    <p> <v-btn v-on:click="prevPage">PREVIOUS</v-btn><v-btn v-on:click="nextPage">NEXT</v-btn></p>
 </div>
 </template>
 
@@ -144,74 +139,11 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-  /* .table {
-    font-family: 'Open Sans', sans-serif;
-    width: 750px;
-    border-collapse: collapse;
-    border: 3px solid rgb(254, 254, 254);
-    margin: 10px 10px 0 10px;
+  .text-xs-center {
+    position: absolute;
+    width: 50%
   }
 
-  .table th  {
-    text-transform: uppercase;
-    text-align: center;
-    background: rgb(254, 0, 0);
-    color: #FFF;
-    cursor: pointer;
-    padding: 8px;
-    min-width: 30px;
-  }
-  .table th:hover {
-          background: #ff8a8a;
-        }
-  .table td {
-    text-align: left;
-    padding: 8px;
-    border-right: 2px solid rgb(255, 0, 0);
-  }
-  .table td:last-child {
-    border-right: none;
-  }
-  .table tbody tr:nth-child(2n) td {
-    background: rgb(252, 190, 190);
-  }
-  .table v-btn {
- background-color: rgb(255, 78, 78);
-  border: none;
-  color: white;
-  padding: 10px 25px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 16px;
-}
-.table v-btn:hover {
-          background: #ff8a8a;
-        }
-  .md-field {
-    max-width: 300px;
-  } */
-  #customers {
-  font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
-  border-collapse: collapse;
-  width: 100%;
-}
 
-#customers td, #customers th {
-  border: 1px solid #ddd;
-  padding: 8px;
-}
-
-#customers tr:nth-child(even){background-color: #f2f2f2;}
-
-#customers tr:hover {background-color: #ddd;}
-
-#customers th {
-  padding-top: 12px;
-  padding-bottom: 12px;
-  text-align: left;
-  background-color: #4CAF50;
-  color: white;
-}
 </style>
 
