@@ -4,7 +4,9 @@
     <router-link class = "navigation_button" to="/table" tag="v-btn">Table</router-link>
     <router-link class = "navigation_button" to="/send" tag="v-btn">Send Email</router-link>
     <router-link class = "navigation_button" to="/add" tag="v-btn">Add Customer</router-link>
-    <router-link class = "navigation_button" to="/test" tag="v-btn">Add Customer</router-link>
+    <router-link class = "navigation_button" to="/test" tag="v-btn">Test</router-link>
+
+
 
 
 
@@ -14,9 +16,11 @@
 </template>
 
 <script>
+import AddCust from './components/customerAddForm'
 
 export default {
     name: 'app',
+    components: {AddCust}
 }
 </script>
 

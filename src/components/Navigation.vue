@@ -1,188 +1,176 @@
 <template>
-<div class="table">
+<v-app>
+  <v-layout row justify-center>
+    <v-dialog v-model="dialog" persistent max-width="600px">
+      <template v-slot:activator="{ on }">
+        <v-btn color="primary" dark v-on="on">Open Dialog</v-btn>
+      </template>
+      <v-card>
+        <v-card-title>
+          <span class="headline">Add Customer</span>
+        </v-card-title>
 
-    <md-table v-if="rows != []" v-model="rows" :md-sort.sync="sortBy" :md-sort-order.sync="ascOrDesc" :md-sort-fn="sortTable"  md-card md-fixed-header>
-      <md-table-toolbar>
-        <div  class="md-toolbar-section-start">
-          <h1 class="md-title">AllCustomers</h1>
+  <v-form
+    ref="form"
+    v-model="valid"
+    lazy-validation
+  >
+    <v-container fluid grid-list-xl>
+      <v-layout wrap align-center>
+        <v-flex
+          xs12
+          md4
+        >
+          <v-text-field
+            v-model="first_name"
+            :rules="nameRules"
+            :counter="10"
+            label="First name"
+            required
+          ></v-text-field>
+        </v-flex>
 
-              <v-btn  v-on:click="editTable('remove')">Remove</v-btn>
-              <v-btn v-on:click="editTable('edit')">Edit</v-btn>
-              <v-btn v-if="isHidden != 'done'" v-on:click="editTable('done')">Done</v-btn>
+        <v-flex
+          xs12
+          md4
+        >
+          <v-text-field
+            v-model="last_name"
+            :rules="nameRules"
+            :counter="10"
+            label="Last name"
+            required
+          ></v-text-field>
+        </v-flex>
 
-        </div>
-        <md-field md-clearable class="md-toolbar-section-end">
-          <md-input id = "nameSearch" placeholder="Search by first name or email..." v-model="search" @input="changeInParams()" > </md-input>
-        </md-field>
-      </md-table-toolbar>
+        <v-flex
+          xs12
+          md4
+        >
+          <v-text-field
+            v-model="email"
+            :rules="emailRules"
+            label="E-mail"
+            required
+          ></v-text-field>
+        </v-flex>
+                <v-flex
+          xs12
+          md4
+        >
+          <v-text-field
+            v-model="address"
+            label="Address"
+            required
+          ></v-text-field>
+        </v-flex>
+                <v-flex
+          xs12
+          md4
+        >
+          <v-text-field
+            v-model="city"
+            label="City"
+            required
+          ></v-text-field>
+        </v-flex>
 
-      <md-table-empty-state
-        md-label="No users found"
-        :md-description="`No user found for this query. Try a different search term or create a new user.`">
-      </md-table-empty-state>
+    <v-select
+      v-model="state"
+      :items="allStates"
+      item-text= "text"
+      item-value= "value"
+      :rules="[v => !!v || 'State is required']"
+      label= "State"
+      required
+    ></v-select>
 
-      <md-table-row  slot="md-table-row" slot-scope="{ item }" >
-        <md-table-cell md-label="ID" md-sort-by="id" md-numeric>{{ item.id }}</md-table-cell>
-        <md-table-cell md-label="FIRST NAME" md-sort-by="first_name" >{{ item.first_name }}</md-table-cell>
-        <md-table-cell md-label="LAST NAME" md-sort-by="last_name">{{ item.last_name }}</md-table-cell>
-        <md-table-cell md-label="EMAIL" md-sort-by="email">{{ item.email }}</md-table-cell>
-        <md-table-cell md-label="ADDRESS" md-sort-by="address">{{ item.address }}</md-table-cell>
-        <md-table-cell md-label="CITY" md-sort-by="city" >{{ item.city }}</md-table-cell>
-        <md-table-cell md-label="STATE" md-sort-by="state">{{ item.state}}</md-table-cell>
-        <md-table-cell md-label="ZIP" >{{ item.zip }}</md-table-cell>
-        <md-table-cell md-label="TIMESTAMP" >{{ item.emailSent }}</md-table-cell>
-        <md-table-cell md-label="EDIT" v-if="isHidden == 'edit'"> <v-btn @click="editCust(item)">Edit {{item.first_name}}</v-btn> </md-table-cell>
-        <md-table-cell md-label="REMOVE" v-if="isHidden == 'remove'"><v-btn @click="removeCust(item.id, index)">Remove {{item.first_name}}</v-btn></md-table-cell>
-      </md-table-row>
-    </md-table>
-    <p> Page: {{page}} of {{Math.ceil(this.totalRec/ this.perPage)}} </p><p>Records per Page: <v-text-field v-model="perPage" v-on:input="changeInParams()"></v-text-field> Total Records: {{totalRec}}</p>
-    <p> <v-btn v-on:click="prevPage">PREVIOUS</v-btn><v-btn v-on:click="nextPage">NEXT</v-btn></p>
-</div>
+                <v-flex
+          xs12
+          md4
+        >
+          <v-text-field
+            v-model="zip"
+            label="Zip"
+            :rules="zipRules"
+          ></v-text-field>
+        </v-flex>
+      </v-layout>
+    </v-container>
+    <v-btn color="blue darken-1" flat @click="onSubmit">Submit</v-btn>
+    <v-btn color="blue darken-1" flat @click="hide"> Cancel </v-btn>
+  </v-form>
+
+
+      </v-card>
+    </v-dialog>
+  </v-layout>
+</v-app>
 </template>
-
 <script>
 import axios from 'axios'
+import states from '../../src/assets/methods/state.js'
 
-
-
-export default {
-  name: 'Table',
-
-  data: () => ({
-        search: "",
-        searching: "NOT_SEARCHING",
-        isHidden: 'done',
-        rows: [],
-        page: 1,
-        perPage: 5,
-        totalRec: 0,
-        sortBy: "none",
-        ascOrDesc: "asc",
+  export default {
+    data: () => ({
+            dialog: false,
+            valid: false,
+            first_name: '',
+            last_name: '',
+            email: null,
+            address: null,
+            city: null,
+            state: null,
+            zip: null,
+            allStates: states,
+      nameRules: [
+        v => !!v || 'Name is required',
+        v => v.length <= 10 || 'Name must be less than 10 characters'
+      ],
+      emailRules: [
+        v => !!v || 'E-mail is required',
+        v => /.+@.+/.test(v) || 'E-mail must be valid'
+      ],
+      zipRules: [
+        v => !!v || 'Zip is required',
+        v => /^[0-9]{5}(?:-[0-9]{4})?$/.test(v) || 'Zip must be valid'
+      ],
     }),
- created(){
-    this.loadItems()
-    this.totalRecords()
-  },
-   methods: {
-     sortTable(){
-       this.loadItems()
-     },
+created(){
+    },
+    mounted(){
 
+    },
 
-     nextPage(){
-      if(this.totalRec > (this.page * this.perPage) ){
-        this.page += 1
-        this.loadItems()
-      }
+    methods: {
+    show () {
 
-     },
-     prevPage(){
-       if(this.page > 1){
-        this.page -= 1
-        this.loadItems()
-       }
+    },
+    hide () {
+      this.$router.push('table')
+    },
+        onSubmit() {
+            let new_customer ={
+                first_name: this.first_name,
+                last_name: this.last_name,
+                email: this.email,
+                address: this.address,
+                city: this.city,
+                state: this.state,
+                zip: this.zip
+            }
 
-     },
-     changeInParams(){
-       if( 0 <= this.perPage &&  this.perPage <= 100){
-        if(this.search.length){
-        this.searching = this.search
-        } else {
-          this.searching = "NOT_SEARCHING"
+                axios.post("http://127.0.0.1:5555/crud",{
+
+                    new_customer
+                })
+                .then(res => {
+                alert( "Customer: " + res.data + " was added")
+                }).catch(err => {
+                    alert(err)
+                })
+            this.$router.push('table')
         }
-        this.page = 1
-        this.loadItems()
-       } else {
-         alert("Only numbers between 0 - 100 please")
-       }
-     },
-     editTable(editHow){
-      this.isHidden = editHow
-
-     },
-     totalRecords(){
-        var url = 'http://localhost:5555/customerCount'
-        return axios.get(url).then(response => {
-          this.totalRec = response.data
-        });
-     },
-    loadItems() {
-        var url = "http://localhost:5555/all_customers/"+this.page+"/"+this.perPage + "/" + this.sortBy + "/" + this.ascOrDesc + '/' + this.searching
-        return axios.get(url).then(response => {
-         this.rows = response.data;
-      });
-    },
-
-    removeCust(cid){
-        let payload = {
-          id: cid
-        }
-        axios.delete('http://127.0.0.1:5555/crud', {data: payload})
-        .then(res =>{
-          alert('Customer: '+res.data + ' was deleted' )
-        }).catch(err=>{
-          alert(err)
-        })
-
-    },
-    editCust(row){
-        this.$router.push({name:"Edit", params:{ row}})
-    },
-    beforeRouteUpdate(to, from, next){
-       next();
-     }
-    },
-}
+    }
+  }
 </script>
-
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-  /* .table {
-    font-family: 'Open Sans', sans-serif;
-    width: 750px;
-    border-collapse: collapse;
-    border: 3px solid rgb(254, 254, 254);
-    margin: 10px 10px 0 10px;
-  }
-
-  .table th  {
-    text-transform: uppercase;
-    text-align: center;
-    background: rgb(254, 0, 0);
-    color: #FFF;
-    cursor: pointer;
-    padding: 8px;
-    min-width: 30px;
-  }
-  .table th:hover {
-          background: #ff8a8a;
-        }
-  .table td {
-    text-align: left;
-    padding: 8px;
-    border-right: 2px solid rgb(255, 0, 0);
-  }
-  .table td:last-child {
-    border-right: none;
-  }
-  .table tbody tr:nth-child(2n) td {
-    background: rgb(252, 190, 190);
-  }
-  .table v-btn {
- background-color: rgb(255, 78, 78);
-  border: none;
-  color: white;
-  padding: 10px 25px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 16px;
-}
-.table v-btn:hover {
-          background: #ff8a8a;
-        }
-  .md-field {
-    max-width: 300px;
-  } */
-</style>
-

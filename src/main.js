@@ -30,6 +30,7 @@ Vue.use(VueGoodTablePlugin)
 Vue.config.errorHandler = function (err, vm, info) {
   var errors = []
   errors.push(err, vm, info)
+  console.log(errors)
 }
 
 

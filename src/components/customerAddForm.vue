@@ -1,74 +1,138 @@
 <template>
-<div id = "modalDiv" v-on:click="show">
-  <modal name="hello-world">
-            <form ref = "form" class="custForm" @submit.prevent = "onSubmit()">
-            <b-form-input
-            id="first_name_input"
+<v-app>
+  <v-form v-model="valid" ref="form" >
+    <v-container fluid grid-list-xl>
+      <v-layout wrap align-center>
+        <v-flex
+          xs12
+          md4
+        >
+          <v-text-field
             v-model="first_name"
-            >
+            :rules="nameRules"
+            :counter="10"
+            label="First name"
+            required
+          ></v-text-field>
+        </v-flex>
 
-            </b-form-input>
-            <p>
-                <label for="first_name"> First Name </label>
-                <input required id ="first_name" v-model="first_name" placeholder="First Name">
+        <v-flex
+          xs12
+          md4
+        >
+          <v-text-field
+            v-model="last_name"
+            :rules="nameRules"
+            :counter="10"
+            label="Last name"
+            required
+          ></v-text-field>
+        </v-flex>
 
-                <label for="last_name"> Last Name </label>
-                <input required id ="last_name" v-model="last_name" placeholder="last_name">
-            </p>
-                    <p>
-                <label for="email"> Email </label>
-                <input required id ="email" v-model="email" placeholder="email">
+        <v-flex
+          xs12
+          md4
+        >
+          <v-text-field
+            v-model="email"
+            :rules="emailRules"
+            label="E-mail"
+            required
+          ></v-text-field>
+        </v-flex>
+                <v-flex
+          xs12
+          md4
+        >
+          <v-text-field
+            v-model="address"
+            label="Address"
+            required
+          ></v-text-field>
+        </v-flex>
+                <v-flex
+          xs12
+          md4
+        >
+          <v-text-field
+            v-model="city"
+            label="City"
+            required
+          ></v-text-field>
+        </v-flex>
 
-                <label for="address"> Address </label>
-                <input id ="address" v-model="address" placeholder="address">
-            </p>
-                    <p>
-                <label for="city"> City </label>
-                <input id ="city" v-model="city" placeholder="city">
+    <v-select
+      v-model="state"
+      :items="allStates"
+      item-text= "text"
+      item-value= "value"
+      :rules="[v => !!v || 'State is required']"
+      label= "State"
+      required
+    ></v-select>
 
-                <label for="state"> State  </label>
-                <input id ="state" v-model="state" placeholder="state">
-            </p>
-                    <p>
-                <label for="zip"> Zip </label>
-                <input id ="zip" v-model="zip" placeholder="zip">
-            </p>
-            <p>
-                <input type="submit" value="submit">
-            </p>
-        </form>
-        <button v-on:click="hide()">Cancel</button>
-  </modal>
-  </div>
+                <v-flex
+          xs12
+          md4
+        >
+          <v-text-field
+            v-model="zip"
+            label="Zip"
+            :rules="zipRules"
+
+          ></v-text-field>
+        </v-flex>
+      </v-layout>
+    </v-container>
+    <v-btn @click="onSubmit">Submit</v-btn>
+    <v-btn @click="hide">Cancel</v-btn>
+  </v-form>
+</v-app>
+
 </template>
 <script>
 import axios from 'axios'
+import states from '../../src/assets/methods/state.js'
 export default {
     data: function(){
         return{
-            first_name: null,
-            last_name: null,
+            valid: false,
+            first_name: '',
+            last_name: '',
             email: null,
             address: null,
             city: null,
             state: null,
             zip: null,
-            showModal: this.$route.params
+            allStates: ['test'],
+            showModal: this.$route.params,
+      nameRules: [
+        v => !!v || 'Name is required',
+        v => v.length <= 10 || 'Name must be less than 10 characters'
+      ],
+      emailRules: [
+        v => !!v || 'E-mail is required',
+        v => /.+@.+/.test(v) || 'E-mail must be valid'
+      ],
+      zipRules: [
+        v => !!v || 'Zip is required',
+        v => /^[0-9]{5}(?:-[0-9]{4})?$/.test(v) || 'Zip must be valid'
+      ],
         }
 
+
+
     },
-      watch: {
-        '$route.meta' ({showModal}){
-            this.showModal = showModal
-        }
+    created(){
+      this.allStates = states
     },
     mounted(){
-        this.$modal.show('hello-world');
+
     },
 
     methods: {
     show () {
-        this.$modal.show('hello-world');
+
     },
     hide () {
       this.$router.push('table')
@@ -83,7 +147,6 @@ export default {
                 state: this.state,
                 zip: this.zip
             }
-            if(new_customer.email.includes('@')){
 
                 axios.post("http://127.0.0.1:5555/crud",{
 
@@ -94,9 +157,6 @@ export default {
                 }).catch(err => {
                     alert(err)
                 })
-            } else {
-                alert("Not a proper email")
-            }
             this.$router.push('table')
         }
     }
@@ -104,10 +164,5 @@ export default {
 }
 </script>
 <style>
-#modalDiv{
-    width:100%;
-    height:280px;
-    top:100%;
-}
 
 </style>
