@@ -1,107 +1,141 @@
 <template>
-    <div id = "modalDiv" v-on:click="show">
-        <modal name="hello-world">
-          <form id = "customerEditForm" ref = "form" class="custForm" @submit.prevent = "onSubmit()">
-            <p>
-                <label for="customer.first_name"> First Name </label>
-                <input required id ="first_name" v-model="customer.first_name" placeholder="First Name">
+  <v-app>
+    <v-form v-model="valid" ref="form">
+      <v-container fluid grid-list-xl>
+        <v-layout wrap align-center>
+          <v-flex xs12 md4>
+            <v-text-field
+              v-model="customer.first_name"
+              :rules="nameRules"
+              :counter="10"
+              label="First name"
+              required
+            />
+          </v-flex>
 
-                <label for="customer.last_name"> Last Name </label>
-                <input required id ="last_name" v-model="customer.last_name" placeholder="last_name">
-            </p>
-                    <p>
-                <label for="customer.email"> Email </label>
-                <input required id ="email" v-model="customer.email" placeholder="email">
+          <v-flex xs12 md4>
+            <v-text-field
+              v-model="customer.last_name"
+              :rules="nameRules"
+              :counter="10"
+              label="Last name"
+              required
+            />
+          </v-flex>
 
-                <label for="customer.address"> Address </label>
-                <input id ="address" v-model="customer.address" placeholder="address">
-            </p>
-                    <p>
-                <label for="customer.city"> City </label>
-                <input id ="city" v-model="customer.city" placeholder="city">
+          <v-flex xs12 md4>
+            <v-text-field v-model="customer.email" :rules="emailRules" label="E-mail" required />
+          </v-flex>
+          <v-flex xs12 md4>
+            <v-text-field v-model="customer.address" label="Address" required />
+          </v-flex>
+          <v-flex xs12 md4>
+            <v-text-field v-model="customer.city" label="City" required />
+          </v-flex>
 
-                <label for="customer.state"> State  </label>
-                <input id ="state" v-model="customer.state" placeholder="state">
-            </p>
-                    <p>
-                <label for="customer.zip"> Zip </label>
-                <input id ="zip" v-model="customer.zip" placeholder="zip">
-            </p>
-            <p>
-                <input type="submit" value="submit">
-            </p>
-        </form>
-        <button v-on:click="hide()">Cancel</button>
-        </modal>
-    </div>
-
+          <v-select
+            v-model="customer.state"
+            :items="allStates"
+            item-text="text"
+            item-value="value"
+            :rules="[v => !!v || 'State is required']"
+            label="State"
+            required
+          ></v-select>
+          <v-flex xs12 md4>
+            <v-text-field v-model="customer.zip" label="Zip" :rules="zipRules" />
+          </v-flex>
+        </v-layout>
+      </v-container>
+      <v-btn :disabled="!valid" @click="onSubmit">Submit</v-btn>
+      <v-btn @click="hide">Cancel</v-btn>
+    </v-form>
+  </v-app>
 </template>
 
-
-
 <script>
-import axios from 'axios'
+import axios from "axios";
+import states from "../../src/config/conf.js";
+import { base_url } from "../config/confRoutes";
+
 export default {
-    name: "EditForm",
+  name: "EditForm",
+  data() {
+    return {
+      valid: false,
+      customer: this.$route.params.row,
+      changed: false,
+      allStates: states,
+      nameRules: [
+        v => !!v || "Name is required",
+        v => v.length <= 10 || "Name must be less than 10 characters"
+      ],
+      emailRules: [
+        v => !!v || "E-mail is required",
+        v => /.+@.+/.test(v) || "E-mail must be valid"
+      ],
+      zipRules: [
+        v => !!v || "Zip is required",
+        v => /^[0-9]{5}(?:-[0-9]{4})?$/.test(v) || "Zip must be valid"
+      ]
+    };
+  },
+  mounted() {
+    this.$modal.show("hello-world");
+  },
 
-    data(){
-        return {
-            customer: this.$route.params.row,
-            changed: false
+  methods: {
+    show() {
+      this.$modal.show("hello-world");
+    },
+
+    hide() {
+      this.$router.push({ name: "Table" });
+    },
+
+    onSubmit() {
+      let updated_customer = this.customer;
+      if (this.changed) {
+        if (updated_customer.email.includes("@")) {
+          axios
+            .put(base_url + "/crud", {
+              updated_customer
+            })
+            .then(res => {
+              alert("Customer: " + res.data.first_name + " has been edited");
+            })
+            .catch(err => {
+              alert(err);
+            });
+        } else {
+          alert("Not a proper email");
         }
-    },
-    mounted(){
-        this.$modal.show('hello-world');
-    },
-    methods:{
-    show () {
-        this.$modal.show('hello-world');
-    },
-    hide () {
-      this.$router.push({name:"Table"})
-    },
-        onSubmit() {
-            let updated_customer = this.customer
-            if(this.changed){
-                if(updated_customer.email.includes('@')){
-                    axios.put("http://127.0.0.1:5555/crud",{
-                        updated_customer
-                    })
-                    .then(res => {
-                    alert( "Customer: " + res.data.first_name + " has been edited")
-                    }).catch(err => {
-                        alert(err)
-                    })
-                } else {
-                    alert("Not a proper email")
-                }
-                this.$router.push({name:"Table"})
-            } else{
-                alert( "No changes have been made")
-            }
-            this.$router.push({name:"Table"})
-        }
-    },
-    watch: {
-        customer: {
-            handler: function(){
-                if(!this.changed){
-                this.changed = true
-                }
-            },
-            deep: true
-
-        }
-
-    },
-
-
-}
-</script>
-<style>
-    #modalDiv{
-        width:100%;
-        height:280px;
-        top:100%;
+        this.$router.push({ name: "Table" });
+      } else {
+        alert("No changes have been made");
+      }
+      this.$router.push({ name: "Table" });
     }
+  },
+
+  watch: {
+    customer: {
+      handler: function() {
+        if (!this.changed) {
+          this.changed = true;
+        }
+      },
+      deep: true
+    }
+  }
+};
+</script>
+
+
+<style>
+#modalDiv {
+  width: 100%;
+  height: 280px;
+  top: 100%;
+}
 </style>

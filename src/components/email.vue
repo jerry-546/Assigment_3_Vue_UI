@@ -1,4 +1,5 @@
 <template>
+<v-app>
     <div>
         <select class = "select-css" v-model="email" @change="update_email_info($event)">
           <option  v-for="row in rows" v-bind:key = "row.id" v-bind:value="row.email" :id="row.id"  > {{row.email}} </option>
@@ -8,21 +9,28 @@
         <v-text-field v-model="subject"></v-text-field>
         <label>Message</label>
         <v-text-field v-model="message"></v-text-field>
-        <label>SMTP server</label>
-        <v-text-field v-model="smtp"></v-text-field>
+
+        <v-select
+        v-model="smtp"
+        :items="servers"
+        :rules="[v => !!v || 'Server is required']"
+        label= "Server"
+        required
+      ></v-select>
     </div>
         <v-btn v-on:click="send_email">SEND EMAIL</v-btn>
     </div>
+</v-app>
 </template>
+
+
 <script>
 import axios from 'axios';
+import {base_url} from '../config/confRoutes'
+
 export default {
     name: 'Email',
     props: {
-        rows:{
-          type:Array,
-          required: true
-        }
       },
     data: function(){
       return {
@@ -31,11 +39,13 @@ export default {
         subject: '',
         message: '',
         smtp: '',
-        rows: []
+        rows: [],
+        servers: ['exchange.heb.com']
       }
     },
     mounted(){
-      axios.get('http://127.0.0.1:5555/send')
+      //Get all the emails in database
+      axios.get(base_url +'/send')
         .then(res => {
           this.rows = res.data
           this.searched = this.rows
@@ -44,36 +54,36 @@ export default {
         })
     },
      methods: {
-    //Getting information to send email to chosen  email
+
      update_email_info: function(event){
+      //Getting information to send email to chosen  email
       var index = event.target.options.selectedIndex;
       var idCho = event.emailID = event.target.options[index].id;
       var emailCho = event.target.options[index].text;
       this.email = emailCho
       this.emailID = idCho
      },
-      //Sends email and send alert to confirm email was sent
+
      send_email: function(){
-      axios.post("http://127.0.0.1:5555/send",{
+      //Sends email and send alert to confirm email was sent
+      axios.post(base_url + "/send",{
         email: this.email,
         subject: this.subject,
         message: this.message,
         smtp: this.smtp
-
       })
       .then(res => {
-        console.log(res.data)
           alert("Email was sent to "+ res.data)
        }).catch(err => {
         alert(err)
        })
-
-
      }
-   }
 
+   }
 }
 </script>
+
+
 <style>
 select {
   width: 50%;

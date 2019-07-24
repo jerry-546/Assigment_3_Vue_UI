@@ -109,7 +109,7 @@
 </template>
 <script>
 import axios from 'axios'
-import states from '../../src/assets/methods/state.js'
+import states from '../../src/config/conf.js'
 
   export default {
     data: () => ({

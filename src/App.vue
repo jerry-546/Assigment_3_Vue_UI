@@ -1,32 +1,22 @@
 <template>
   <div id="app">
-
-    <router-link class = "navigation_button" to="/table" tag="v-btn">Table</router-link>
-    <router-link class = "navigation_button" to="/send" tag="v-btn">Send Email</router-link>
-    <router-link class = "navigation_button" to="/add" tag="v-btn">Add Customer</router-link>
-    <router-link class = "navigation_button" to="/test" tag="v-btn">Test</router-link>
-
-
-
-
+    <router-link class="navigation_button" to="/table" tag="v-btn">Table</router-link>
+    <router-link class="navigation_button" to="/send" tag="v-btn">Send Email</router-link>
+    <router-link class="navigation_button" to="/add" tag="v-btn">Add Customer</router-link>
 
     <router-view :key="$route.fullPath"></router-view>
   </div>
-
 </template>
 
 <script>
-import AddCust from './components/customerAddForm'
-
 export default {
-    name: 'app',
-    components: {AddCust}
-}
+  name: "app"
+};
 </script>
 
 <style>
 .navigation_button {
- background-color: rgb(255, 0, 0);
+  background-color: rgb(255, 0, 0);
   border: none;
   color: white;
   padding: 15px 32px;
@@ -35,7 +25,5 @@ export default {
   display: inline-block;
   font-size: 16px;
 }
-/* .navigation_button:hover {
-          background: #ff8a8a;
-        } */
+
 </style>
