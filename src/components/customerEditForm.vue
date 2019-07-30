@@ -1,5 +1,6 @@
 <template>
   <v-app>
+    <h1 class="md-title">Edit Customer</h1>
     <v-form v-model="valid" ref="form">
       <v-container fluid grid-list-xl>
         <v-layout wrap align-center>
@@ -32,8 +33,9 @@
           <v-flex xs12 md4>
             <v-text-field v-model="customer.city" label="City" required />
           </v-flex>
-
+          <v-flex xs12 md4>
           <v-select
+
             v-model="customer.state"
             :items="allStates"
             item-text="text"
@@ -42,6 +44,7 @@
             label="State"
             required
           ></v-select>
+          </v-flex>
           <v-flex xs12 md4>
             <v-text-field v-model="customer.zip" label="Zip" :rules="zipRules" />
           </v-flex>

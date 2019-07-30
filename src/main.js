@@ -11,12 +11,13 @@ import 'material-design-icons-iconfont/dist/material-design-icons.css'
 import 'vue-material/dist/vue-material.min.css'
 
 
+
 import App from './App'
 import Table from "./components/table_template.vue"
 import Send from "./components/email.vue"
 import AddCust from "./components/customerAddForm.vue"
 import Edit from "./components/customerEditForm"
-import Test from "./components/Navigation.vue"
+import Test from "./components/test.vue"
 
 
 

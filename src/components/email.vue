@@ -1,25 +1,36 @@
 <template>
 <v-app>
+  <v-form>
+  <v-container grid-list-x1>
+    <v-layout wrap>
     <div>
-        <select class = "select-css" v-model="email" @change="update_email_info($event)">
+      <h1 class="md-title">Send Email</h1>
+        <select id = "email" class = "select-css" v-model="email" @change="update_email_info($event)">
           <option  v-for="row in rows" v-bind:key = "row.id" v-bind:value="row.email" :id="row.id"  > {{row.email}} </option>
         </select>
     <div>
-        <label>Subject</label>
-        <v-text-field v-model="subject"></v-text-field>
-        <label>Message</label>
-        <v-text-field v-model="message"></v-text-field>
 
+        <label>Subject</label>
+        <v-text-field placeholder="Subject..." v-model="subject" required></v-text-field>
+        <label>Message</label>
+        <v-text-field placeholder="Message..." v-model="message" required></v-text-field>
+      <v-flex xs12 md14>
         <v-select
+        id = "server"
+        class = "select-css"
         v-model="smtp"
         :items="servers"
         :rules="[v => !!v || 'Server is required']"
         label= "Server"
         required
       ></v-select>
+      </v-flex>
     </div>
         <v-btn v-on:click="send_email">SEND EMAIL</v-btn>
     </div>
+    </v-layout>
+  </v-container>
+  </v-form>
 </v-app>
 </template>
 
@@ -85,7 +96,7 @@ export default {
 
 
 <style>
-select {
+#email {
   width: 50%;
   height: 30px;
   color: rgb(255, 104, 104);
@@ -99,4 +110,19 @@ select {
   border-radius: 3px;
   overflow: hidden;
 }
+#server{
+  width: 50%;
+  height: 30px;
+  color: rgb(255, 104, 104);
+
+  background: transparent;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  height: 34px;
+
+  border: 1px solid #111;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
 </style>

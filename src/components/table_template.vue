@@ -7,16 +7,18 @@
       :md-sort.sync="sortBy"
       :md-sort-order.sync="ascOrDesc"
       :md-sort-fn="sortTable"
+
       md-card
       md-fixed-header
     >
+
       <md-table-toolbar>
-        <div class="md-toolbar-section-start">
-          <h1 class="md-title">AllCustomers</h1>
+        <div class="md-tocss foolbar-section-start">
+          <h1 class="md-title">All Customers</h1>
 
           <v-btn v-if="isHidden != 'done'" v-on:click="editTable('done')">Done</v-btn>
-          <v-btn v-on:click="editTable('remove')">Remove</v-btn>
-          <v-btn v-on:click="editTable('edit')">Edit</v-btn>
+          <v-btn v-if="isHidden == 'done'" v-on:click="editTable('remove')">Remove</v-btn>
+          <v-btn v-if="isHidden == 'done'" v-on:click="editTable('edit')">Edit</v-btn>
         </div>
         <md-field md-clearable class="md-toolbar-section-front">
           <md-input
@@ -81,6 +83,7 @@
 import axios from "axios";
 import { base_url } from "../config/confRoutes";
 
+
 export default {
   name: "Table",
   data: () => ({
@@ -101,7 +104,9 @@ export default {
 
   methods: {
     sortTable() {
-      this.loadItems();
+      if (this.sortBy != "none") {
+        this.loadItems();
+      }
     },
 
     nextPage() {
@@ -157,6 +162,11 @@ export default {
         "/" +
         this.searching;
       return axios.get(url).then(response => {
+        response.data.forEach(element => {
+          if (element.emailSent != null) {
+            element.emailSent = element.emailSent.substr(0, 10);
+          }
+        });
         this.rows = response.data;
       });
     },
@@ -193,32 +203,7 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-#customers {
-  font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
-  border-collapse: collapse;
-  width: 90%;
-}
+@import "../assets/css/table.css";
 
-td,
-th {
-  border: 1px solid #ddd;
-  padding: 6px;
-}
-
-tr:nth-child(odd) {
-  background-color: #ffa7a7;
-}
-
-.tableEditButton {
-  size: 1%;
-}
-
-th {
-  padding-top: 10px;
-  padding-bottom: 10px;
-  text-align: left;
-  background-color: #4caf50;
-  color: rgb(243, 0, 0);
-}
 </style>
 
