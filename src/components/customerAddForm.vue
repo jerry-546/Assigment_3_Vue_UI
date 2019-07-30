@@ -1,6 +1,8 @@
 <template>
   <v-app>
-    <h1 class="md-title">Add Customer</h1>
+    <v-toolbar flat color="light red" dark>
+      <v-toolbar-title>Add Customer</v-toolbar-title>
+    </v-toolbar>
     <v-form v-model="valid" ref="form" :lazy-validation="lazy">
       <v-container fluid grid-list-xl>
         <v-layout wrap align-center>
@@ -34,17 +36,17 @@
             <v-text-field v-model="city" label="City" required />
           </v-flex>
 
-        <v-flex xs12 md4>
-          <v-select
-            v-model="state"
-            :items="allStates"
-            item-text="text"
-            item-value="value"
-            :rules="[v => !!v || 'State is required']"
-            label="State"
-            required
-          />
-        </v-flex>
+          <v-flex xs12 md4>
+            <v-select
+              v-model="state"
+              :items="allStates"
+              item-text="text"
+              item-value="value"
+              :rules="[v => !!v || 'State is required']"
+              label="State"
+              required
+            />
+          </v-flex>
 
           <v-flex xs12 md4>
             <v-text-field v-model="zip" label="Zip" :rules="zipRules" />

@@ -17,7 +17,7 @@ import Table from "./components/table_template.vue"
 import Send from "./components/email.vue"
 import AddCust from "./components/customerAddForm.vue"
 import Edit from "./components/customerEditForm"
-import Test from "./components/test.vue"
+
 
 
 
@@ -65,14 +65,7 @@ const routes = [
     }
   },
 
-  {
-    path: '/test',
-    name: "Test",
-    component: Test,
-    meta: {
-      showModal: true
-    }
-  }
+
 
 
 ]

@@ -1,5 +1,8 @@
 <template>
   <div class="table">
+    <v-toolbar flat color="light red" dark>
+      <v-toolbar-title>Table</v-toolbar-title>
+    </v-toolbar>
     <md-table
       id="customers"
       v-if="rows != []"
@@ -7,15 +10,11 @@
       :md-sort.sync="sortBy"
       :md-sort-order.sync="ascOrDesc"
       :md-sort-fn="sortTable"
-
       md-card
       md-fixed-header
     >
-
       <md-table-toolbar>
         <div class="md-tocss foolbar-section-start">
-          <h1 class="md-title">All Customers</h1>
-
           <v-btn v-if="isHidden != 'done'" v-on:click="editTable('done')">Done</v-btn>
           <v-btn v-if="isHidden == 'done'" v-on:click="editTable('remove')">Remove</v-btn>
           <v-btn v-if="isHidden == 'done'" v-on:click="editTable('edit')">Edit</v-btn>
@@ -82,7 +81,6 @@
 <script>
 import axios from "axios";
 import { base_url } from "../config/confRoutes";
-
 
 export default {
   name: "Table",
@@ -204,6 +202,5 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 @import "../assets/css/table.css";
-
 </style>
 
